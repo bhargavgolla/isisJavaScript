@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <title>ISIS JavaScript Viewer</title>
+  
+  
+  
+  <link rel="stylesheet" href="https://d10ajoocuyu32n.cloudfront.net/mobile/1.3.1/jquery.mobile-1.3.1.min.css">
+  
+  
+  <!-- jQuery and jQuery Mobile -->
+  <script src="https://d10ajoocuyu32n.cloudfront.net/jquery-1.9.1.min.js"></script>
+  <script src="https://d10ajoocuyu32n.cloudfront.net/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+
+  <!-- Extra Codiqa features -->
+  <script src="scripts/jQuery.base64.js"></script>
+  <script src="scripts/main.js"></script>
+   
+</head>
+<body>
+<!-- login -->
+<div data-role="page" id="login">
+    <div data-theme="a" data-role="header">
+        <h3>
+            ISIS JavaScript
+        </h3>
+    </div>
+    <div data-role="content">
+        <div data-role="fieldcontain">
+            <label for="url">
+                URL
+            </label>
+            <input name="url" id="url" placeholder="" value="http://localhost:8080/" type="url">
+        </div>
+        <div data-role="fieldcontain">
+            <label for="username">
+                Username
+            </label>
+            <input name="username" id="username" placeholder="" value="sven" type="text">
+        </div>
+        <div data-role="fieldcontain">
+            <label for="password">
+                Password
+            </label>
+            <input name="password" id="password" placeholder="" value="pass" type="password">
+        </div>
+        <a id="loginButton" data-role="button" data-theme="b">
+            Submit
+        </a>
+    </div>
+</div>
+<!-- Services -->
+<div data-role="page" id="services">
+    <div data-theme="a" data-role="header">
+        <a data-role="button" href="#login" data-icon="arrow-l" data-iconpos="left" class="ui-btn-left">
+            Back
+        </a>
+        <h3>
+            Services
+        </h3>
+    </div>
+    <div data-role="content">
+        <ul id="servicesList" data-role="listview" data-divider-theme="b" data-inset="true">
+			
+        </ul>
+    </div>
+</div>
+
+<!-- Service -->
+<div data-role="page" id="service">
+    <div data-theme="a" data-role="header">
+        <a data-role="button" href="#services" data-icon="arrow-l" data-iconpos="left" class="ui-btn-left">
+            Back
+        </a>
+        <h3>
+            Service
+        </h3>
+    </div>
+    <div data-role="content">
+        <p>HelloWorld!</p>
+    </div>
+</div>
+
+</body>
+</html>

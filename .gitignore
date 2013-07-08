@@ -1,0 +1,26 @@
+target/
+target-ide/
+
+*~
+*.swp
+*.class
+bin/
+target/
+target-ide/
+logs/
+.settings/
+.project
+.classpath
+.idea
+*.iml
+
+# log files
+datanucleus.log
+isis.log
+hs_err_pid*.log
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
