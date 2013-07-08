@@ -13,7 +13,7 @@ $(document).ready(function(){
 				url: isisURL+'restful/services/',
 				accepts: "application/json",
 				beforeSend: function(xhr) {
-					xhr.setRequestHeader("Authorization", header);
+					//xhr.setRequestHeader("Authorization", header);
 					$.mobile.showPageLoadingMsg(true);
 				},
 				complete: function() {
