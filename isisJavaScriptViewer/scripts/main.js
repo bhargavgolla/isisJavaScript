@@ -20,14 +20,13 @@ $(document).ready(function(){
 					$.mobile.hidePageLoadingMsg();
 				},
 				success: function (result) {
-					console.log(result);
 					console.log(result.value);
 					$.mobile.changePage("#services");
 					$('#servicesList').empty();
-					/*for(i = 0; i < result.value.length ; i++){
+					for(i = 0; i < result.value.length ; i++){
 						$('#servicesList').append('<li data-theme="c"><a href="#service" data-transition="slide">'+result.value[i].title+'</a></li>');
 					}
-					$('#servicesList').listview('refresh');*/
+					$('#servicesList').listview('refresh');
 				},
 				error: function (request,error) {
 					console.log(error);
