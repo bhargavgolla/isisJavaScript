@@ -11,9 +11,9 @@ $(document).ready(function(){
 			header = "Basic " + $.base64.encode(username + ":" + password);
 			$.ajax({
 				url: isisURL+'restful/services/',
-				accepts: "application/json",
 				beforeSend: function(xhr) {
 					//xhr.setRequestHeader("Authorization", header);
+					xhr.setRequestHeader("Accept", "application/json");
 					$.mobile.showPageLoadingMsg(true);
 				},
 				complete: function() {
@@ -40,9 +40,9 @@ $(document).ready(function(){
 	$('.service').livequery("click",function(){
 		$.ajax({
 			url: $(this).attr('data-href'),
-			accepts: "application/json",
 			beforeSend: function(xhr) {
 				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Accept", "application/json");
 				$.mobile.showPageLoadingMsg(true);
 			},
 			complete: function() {
@@ -57,6 +57,34 @@ $(document).ready(function(){
 					$('#collectionsList').append('<li data-theme="c"><a class="collection" data-href="'+collections[collection].links[0].href+'" data-transition="slide">'+collection+'</a></li>');
 				}
 				$('#collectionsList').listview('refresh');
+			},
+			error: function (request,error) {
+				console.log(error);
+				alert('Username and Password donot match!');
+			}
+		});
+    });
+	
+	$('.collection').livequery("click",function(){
+		$.ajax({
+			url: $(this).attr('data-href')+"/invoke",
+			beforeSend: function(xhr) {
+				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Accept", "application/json");
+				$.mobile.showPageLoadingMsg(true);
+			},
+			complete: function() {
+				$.mobile.hidePageLoadingMsg();
+			},
+			success: function (data) {
+				var objects = data.result.value;
+				console.log(objects);
+				$.mobile.changePage("#objects");
+				$('#objectsList').empty();
+				for(i = 0; i < objects.length; i++){
+					$('#objectsList').append('<li data-theme="c"><a class="object" data-href="'+objects[i].href+'" data-transition="slide">'+objects[i].title+'</a></li>');
+				}
+				$('#objectsList').listview('refresh');
 			},
 			error: function (request,error) {
 				console.log(error);
