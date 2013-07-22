@@ -92,4 +92,40 @@ $(document).ready(function(){
 			}
 		});
     });
+	
+	$('.object').livequery("click",function(){
+		$.ajax({
+			url: $(this).attr('data-href'),
+			beforeSend: function(xhr) {
+				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Accept", "application/json");
+				$.mobile.showPageLoadingMsg(true);
+			},
+			complete: function() {
+				$.mobile.hidePageLoadingMsg();
+			},
+			success: function (data) {
+				var objectDetails = data.links[2].arguments.members;
+				var put_url = data.links[2].href;
+				console.log(objectDetails);
+				$.mobile.changePage("#object");
+				for(var detail in objectDetails){
+					if($("#"+detail).length > 0){
+						if(typeof objectDetails[detail].value == 'boolean'){
+							if(objectDetails[detail].value){
+								$("#"+detail).val('on');
+							}
+						} else {
+							$("#"+detail).val(objectDetails[detail].value);
+						}
+					}
+				}
+				$('#editObject').attr('data-href',put_url);
+			},
+			error: function (request,error) {
+				console.log(error);
+				alert('Username and Password donot match!');
+			}
+		});
+    });
 });
