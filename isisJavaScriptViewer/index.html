@@ -35,7 +35,8 @@
             <label for="url">
                 URL
             </label>
-            <input name="url" id="url" placeholder="" value="http://localhost:8080/myapp-webapp/" type="url">
+            <!-- My Localbox --><input name="url" id="url" placeholder="" value="http://localhost:8080/myapp-webapp/" type="url">
+			<!-- .NET implementation <input name="url" id="url" placeholder="" value="http://localhost:9292/" type="url"> -->
         </div>
         <div data-role="fieldcontain">
             <label for="username">
@@ -120,19 +121,19 @@
             <label for="description">
                 Description
             </label>
-            <input name="" id="description" placeholder="" value="" type="text">
+            <input name="" id="description" placeholder="" value="" type="text" data-changed="0">
 		</div>
 		<div data-role="fieldcontain">
             <label for="category">
                 Category
             </label>
-            <input name="" id="category" placeholder="" value="" type="text">
+            <input name="" id="category" placeholder="" value="" type="text" data-changed="0">
 		</div>
 		<div data-role="fieldcontain">
             <label for="complete">
                 Complete?
             </label>
-            <select name="complete" id="complete" data-theme="" data-role="slider">
+            <select name="complete" id="complete" data-theme="" data-role="slider" data-changed="0">
                 <option value="off">
                     No
                 </option>
@@ -145,25 +146,25 @@
             <label for="cost">
                 Cost
             </label>
-            <input name="" id="cost" placeholder="" value="" type="number">
+            <input name="" id="cost" placeholder="" value="0" type="number" data-changed="0">
 		</div>
 		<div data-role="fieldcontain">
             <label for="dueBy">
                 Due by
             </label>
-            <input name="" id="dueBy" placeholder="" value="" type="date">
+            <input name="" id="dueBy" placeholder="" value="" type="date" data-changed="0">
 		</div>
 		<div data-role="fieldcontain">
             <label for="notes">
                 Notes
             </label>
-            <textarea name="" id="notes" placeholder=""></textarea>
+            <textarea name="" id="notes" placeholder="" data-changed="0"></textarea>
 		</div>
 		<div data-role="fieldcontain">
             <label for="versionSequence">
                 Version
             </label>
-            <input name="" id="versionSequence" placeholder="" value="" type="number">
+            <input name="" id="versionSequence" placeholder="" value="" disabled data-changed="0">
 		</div>
 		<a data-role="button" href="" id="editObject">
 			Edit
