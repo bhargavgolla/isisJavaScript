@@ -24,18 +24,21 @@ var initializeInputs = function(){
 }
 
 var updateProperty = function(selector){
-	var value = $(selector).val();
-	if(value == "on"){
-		value = true;
-	} else if(value == "off"){
-		value = false;
+	var propertyValue = $(selector).val();
+	if(propertyValue == "on"){
+		propertyValue = true;
+	} else if(propertyValue == "off"){
+		propertyValue = false;
 	}
 	var propertyData = {
-		"value":value
+		"value":propertyValue
 	};
+	var version = parseInt($('#versionSequence').val()) + 1;
+	propertyData = JSON.stringify(propertyData);
 	$.ajax({
 		type: "PUT",
 		url: $(selector).attr('data-href'),
+		dataType: 'json',
 		data: propertyData,
 		beforeSend: function(xhr) {
 			//xhr.setRequestHeader("Authorization", header);
@@ -48,11 +51,11 @@ var updateProperty = function(selector){
 		success: function (data) {
 			alert('Object updated successfully');
 			$(selector).attr('data-changed',"0");
-			$('#versionSequence').val($('#versionSequence').val()++);
+			$('#versionSequence').val(version);
 		},
 		error: function (request,error) {
 			console.log(error);
-			alert('Username and Password donot match!');
+			alert("Object couldn't be updated!");
 		}
 	});
 }
