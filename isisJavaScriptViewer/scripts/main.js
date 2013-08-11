@@ -1,18 +1,32 @@
 var isisURL, username, password, header;
-var populatePutString = function(){
-	var data = '';
-	$('.objectDetails div input').each(function(){
-		if($(this).attr('id') != "versionSequence"){
-			data = data + $(this).attr('id') + "=" + $(this).val() + "&";
-		}
+
+$.fn.serializeObject = function()
+{
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+			v = {"value":this.value};
+            o[this.name].push(v);
+        } else {
+			v = {"value":this.value};
+            o[this.name] = v;
+        }
+    });
+    return o;
+}
+
+var populatePostData = function(){
+	var data = {};
+	$('.newObjectDetails div input').each(function(){
+		propId =  $(this).attr('id');
+		propVal = $(this).val();
+		$.extend(data , {propId : propVal});
 	});
-	data += 'complete='
-	if($('#complete').val() == 'on'){
-		data += 'true';
-	} else {
-		data += 'false';
-	}
-	data = encodeURI(data);
+	data = JSON.stringify(data);
 	console.log(data);
 	return data;
 }
@@ -117,7 +131,7 @@ $(document).ready(function(){
 				$.mobile.changePage("#service");
 				$('#collectionsList').empty();
 				for(var collection in collections){
-					$('#collectionsList').append('<li data-theme="c"><a class="collection" data-href="'+collections[collection].links[0].href+'" data-transition="slide">'+collection+'</a></li>');
+					$('#collectionsList').append('<li data-theme="c"><a class="collection" data-id="'+collections[collection].id+'" data-href="'+collections[collection].links[0].href+'" data-transition="slide">'+collection+'</a></li>');
 				}
 				$('#collectionsList').listview('refresh');
 			},
@@ -129,31 +143,39 @@ $(document).ready(function(){
     });
 	
 	$('.collection').livequery("click",function(){
-		$.ajax({
-			url: $(this).attr('data-href')+"/invoke",
-			beforeSend: function(xhr) {
-				//xhr.setRequestHeader("Authorization", header);
-				xhr.setRequestHeader("Accept", "application/json");
-				$.mobile.showPageLoadingMsg(true);
-			},
-			complete: function() {
-				$.mobile.hidePageLoadingMsg();
-			},
-			success: function (data) {
-				var objects = data.result.value;
-				console.log(objects);
-				$.mobile.changePage("#objects");
-				$('#objectsList').empty();
-				for(i = 0; i < objects.length; i++){
-					$('#objectsList').append('<li data-theme="c"><a class="object" data-href="'+objects[i].href+'" data-transition="slide">'+objects[i].title+'</a></li>');
+		var collection_id = $(this).attr('data-id');
+		if(collection_id.indexOf("new") != -1){
+			$.mobile.changePage("#newObject");
+			$("#createObject").attr('data-href',$(this).attr('data-href')+"/invoke");
+		} else if(collection_id.indexOf("similarTo") != -1){
+		
+		} else{
+			$.ajax({
+				url: $(this).attr('data-href')+"/invoke",
+				beforeSend: function(xhr) {
+					//xhr.setRequestHeader("Authorization", header);
+					xhr.setRequestHeader("Accept", "application/json");
+					$.mobile.showPageLoadingMsg(true);
+				},
+				complete: function() {
+					$.mobile.hidePageLoadingMsg();
+				},
+				success: function (data) {
+					var objects = data.result.value;
+					console.log(objects);
+					$.mobile.changePage("#objects");
+					$('#objectsList').empty();
+					for(i = 0; i < objects.length; i++){
+						$('#objectsList').append('<li data-theme="c"><a class="object" data-href="'+objects[i].href+'" data-transition="slide">'+objects[i].title+'</a></li>');
+					}
+					$('#objectsList').listview('refresh');
+				},
+				error: function (request,error) {
+					console.log(error);
+					alert('Username and Password donot match!');
 				}
-				$('#objectsList').listview('refresh');
-			},
-			error: function (request,error) {
-				console.log(error);
-				alert('Username and Password donot match!');
-			}
-		});
+			});
+		}
     });
 	
 	$('.object').livequery("click",function(){
@@ -221,6 +243,32 @@ $(document).ready(function(){
 		$('.objectDetails input,.objectDetails select,.objectDetails textarea').each(function(){
 			if($(this).attr('data-changed') != "0"){
 				updateProperty(this);
+			}
+		});
+	});
+	
+	$('#createObject').click(function(){
+		var newDetails = JSON.stringify($('.newObjectDetails form').serializeObject());
+		console.log(newDetails);
+		$.ajax({
+			type: "POST",
+			url: $(this).attr('data-href'),
+			data: newDetails,
+			beforeSend: function(xhr) {
+				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Accept", "application/json");
+				$.mobile.showPageLoadingMsg(true);
+			},
+			complete: function() {
+				$.mobile.hidePageLoadingMsg();
+			},
+			success: function (data) {
+				alert('Object created successfully');
+				$.mobile.changePage("#service");
+			},
+			error: function (request,error) {
+				console.log(error);
+				alert('Username and Password donot match!');
 			}
 		});
 	});

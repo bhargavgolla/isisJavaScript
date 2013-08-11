@@ -172,5 +172,47 @@
     </div>
 </div>
 
+<!-- New Object -->
+<div data-role="page" id="newObject">
+    <div data-theme="a" data-role="header">
+        <a data-role="button" href="#service" data-icon="arrow-l" data-iconpos="left" class="ui-btn-left">
+            Back
+        </a>
+        <h3>
+            New Object
+        </h3>
+    </div>
+    <div data-role="content" class="newObjectDetails">
+	<form action="" method="POST">
+        <div data-role="fieldcontain">
+            <label for="description">
+                Description
+            </label>
+            <input name="description" id="description" placeholder="" value="" type="text">
+		</div>
+		<div data-role="fieldcontain">
+            <label for="category">
+                Category
+            </label>
+            <input name="category" id="category" placeholder="" value="" type="text">
+		</div>
+		<div data-role="fieldcontain">
+            <label for="cost">
+                Cost
+            </label>
+            <input name="cost" id="cost" placeholder="" value="0" type="number">
+		</div>
+		<div data-role="fieldcontain">
+            <label for="dueBy">
+                Due by
+            </label>
+            <input name="dueBy" id="dueBy" placeholder="" value="" type="date">
+		</div>
+		<a data-role="button" href="" id="createObject">
+			Create
+		</a>
+	</form>
+    </div>
+</div>
 </body>
 </html>
