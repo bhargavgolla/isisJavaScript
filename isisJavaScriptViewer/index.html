@@ -117,18 +117,38 @@
         </h3>
     </div>
     <div data-role="content" class="objectDetails">
+	<form action="" method="POST">
         <div data-role="fieldcontain">
             <label for="description">
                 Description
             </label>
-            <input name="" id="description" placeholder="" value="" type="text" data-changed="0">
+            <input name="description" id="description" placeholder="" value="" type="text" data-changed="0">
 		</div>
 		<div data-role="fieldcontain">
             <label for="category">
                 Category
             </label>
-            <input name="" id="category" placeholder="" value="" type="text" data-changed="0">
+            <input name="category" id="category" placeholder="" value="" type="text" data-changed="0">
 		</div>
+		<div data-role="fieldcontain">
+            <label for="cost">
+                Cost
+            </label>
+            <input name="cost" id="cost" placeholder="" value="0" type="number" data-changed="0">
+		</div>
+		<div data-role="fieldcontain">
+            <label for="dueBy">
+                Due by
+            </label>
+            <input name="dueBy" id="dueBy" placeholder="" value="" type="date" data-changed="0">
+		</div>
+		<div data-role="fieldcontain">
+            <label for="notes">
+                Notes
+            </label>
+            <textarea name="notes" id="notes" placeholder="" data-changed="0"></textarea>
+		</div>
+	</form>
 		<div data-role="fieldcontain">
             <label for="complete">
                 Complete?
@@ -141,24 +161,6 @@
                     Yes
                 </option>
             </select>
-		</div>
-		<div data-role="fieldcontain">
-            <label for="cost">
-                Cost
-            </label>
-            <input name="" id="cost" placeholder="" value="0" type="number" data-changed="0">
-		</div>
-		<div data-role="fieldcontain">
-            <label for="dueBy">
-                Due by
-            </label>
-            <input name="" id="dueBy" placeholder="" value="" type="date" data-changed="0">
-		</div>
-		<div data-role="fieldcontain">
-            <label for="notes">
-                Notes
-            </label>
-            <textarea name="" id="notes" placeholder="" data-changed="0"></textarea>
 		</div>
 		<div data-role="fieldcontain">
             <label for="versionSequence">

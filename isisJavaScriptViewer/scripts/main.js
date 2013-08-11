@@ -19,18 +19,6 @@ $.fn.serializeObject = function()
     return o;
 }
 
-var populatePostData = function(){
-	var data = {};
-	$('.newObjectDetails div input').each(function(){
-		propId =  $(this).attr('id');
-		propVal = $(this).val();
-		$.extend(data , {propId : propVal});
-	});
-	data = JSON.stringify(data);
-	console.log(data);
-	return data;
-}
-
 var initializeInputs = function(){
 	$('.objectDetails input,.objectDetails select,.objectDetails textarea').change(function() {
 		$(this).attr('data-changed',"1");
@@ -218,7 +206,9 @@ $(document).ready(function(){
     });
 	
 	$('#editObject').click(function(){
-		/*var newDetails = populatePutString();
+		var newDetails = JSON.stringify($('.objectDetails form').serializeObject());
+		console.log(newDetails);
+		var version = parseInt($('#versionSequence').val()) + 1;
 		$.ajax({
 			type: "PUT",
 			url: $(this).attr('data-href'),
@@ -232,17 +222,12 @@ $(document).ready(function(){
 				$.mobile.hidePageLoadingMsg();
 			},
 			success: function (data) {
-				$('#versionSequence').val($('#versionSequence').val()++);
+				$('#versionSequence').val(version);
 				alert('Object updated successfully');
 			},
 			error: function (request,error) {
 				console.log(error);
 				alert('Username and Password donot match!');
-			}
-		});*/
-		$('.objectDetails input,.objectDetails select,.objectDetails textarea').each(function(){
-			if($(this).attr('data-changed') != "0"){
-				updateProperty(this);
 			}
 		});
 	});
