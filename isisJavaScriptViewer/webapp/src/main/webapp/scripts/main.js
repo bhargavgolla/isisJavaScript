@@ -208,13 +208,13 @@ $(document).ready(function(){
 						if(objectDetails[detail].disabledReason == null){
 							$('#objectCollectionsList').append('<li data-theme="c"><a class="objectCollection" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="0">'+detail+'</a></li>');
 						} else {
-							$('#objectCollectionsList').append('<li data-theme="c"><a class="objectCollection" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="1">'+detail+'</a></li>');
+							$('#objectCollectionsList').append('<li data-theme="c"><a class="objectCollection" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="'+objectDetails[detail].disabledReason+'">'+detail+'</a></li>');
 						}
 					} else if(objectDetails[detail].memberType == "action"){
 						if(objectDetails[detail].disabledReason == null){
 							$('#objectActionsList').append('<li data-theme="c"><a class="objectAction" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="0">'+detail+'</a></li>');
 						} else {
-							$('#objectActionsList').append('<li data-theme="c"><a class="objectAction" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="1">'+detail+'</a></li>');
+							$('#objectActionsList').append('<li data-theme="c"><a class="objectAction" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="'+objectDetails[detail].disabledReason+'">'+detail+'</a></li>');
 						}
 					}
 				}
@@ -236,7 +236,7 @@ $(document).ready(function(){
 	$('.objectCollection').livequery("click",function(){
 		var disabled = $(this).attr('data-disabled');
 		if(disabled != 0){
-			toastr.info('This collection is disabled');
+			toastr.info(disabled);
 		} else{
 			$('#similarObjects').load('../Content/partials/objects.html', function(){
 				$(this).trigger("pagecreate");
