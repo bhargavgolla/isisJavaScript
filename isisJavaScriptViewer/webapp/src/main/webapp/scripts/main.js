@@ -63,7 +63,16 @@ var updateProperty = function(selector){
 }
 
 $(document).ready(function(){
-	initializeInputs();
+	//initializeInputs();
+	toastr.options = {
+		"debug": false,
+		"positionClass": "toast-bottom-full-width",
+		"onclick": null,
+		"fadeIn": 300,
+		"fadeOut": 1000,
+		"timeOut": 1000,
+		"extendedTimeOut": 1000
+	};
     $('#loginButton').click(function(e,data){
 		username = $('#username').val();
 		password = $('#password').val();
@@ -182,6 +191,7 @@ $(document).ready(function(){
 				var put_url = data.links[2].href;
 				console.log(objectDetails);
 				$.mobile.changePage("#object");
+				$('#objectCollectionsList').empty();
 				for(var detail in objectDetails){
 					if(objectDetails[detail].memberType == "property"){
 						if($("#"+detail).length > 0){
@@ -194,8 +204,26 @@ $(document).ready(function(){
 							}
 							$("#"+detail).attr('data-href',objectDetails[detail].links[0].href);
 						}
+					} else if(objectDetails[detail].memberType == "collection"){
+						if(objectDetails[detail].disabledReason == null){
+							$('#objectCollectionsList').append('<li data-theme="c"><a class="objectCollection" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="0">'+detail+'</a></li>');
+						} else {
+							$('#objectCollectionsList').append('<li data-theme="c"><a class="objectCollection" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="1">'+detail+'</a></li>');
+						}
+					} else if(objectDetails[detail].memberType == "action"){
+						if(objectDetails[detail].disabledReason == null){
+							$('#objectActionsList').append('<li data-theme="c"><a class="objectAction" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="0">'+detail+'</a></li>');
+						} else {
+							$('#objectActionsList').append('<li data-theme="c"><a class="objectAction" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="1">'+detail+'</a></li>');
+						}
 					}
 				}
+				if ($('#objectCollectionsList').hasClass('ui-listview')) {
+					$('#objectCollectionsList').listview('refresh');
+				} else {
+					$('#objectCollectionsList').trigger('create');
+				}
+				//$('#objectCollectionsList').listview('refresh');
 				$('#editObject').attr('data-href',put_url);
 			},
 			error: function (request,error) {
@@ -203,6 +231,42 @@ $(document).ready(function(){
 				alert('Username and Password donot match!');
 			}
 		});
+    });
+	
+	$('.objectCollection').livequery("click",function(){
+		var disabled = $(this).attr('data-disabled');
+		if(disabled != 0){
+			toastr.info('This collection is disabled');
+		} else{
+			$('#similarObjects').load('../Content/partials/objects.html', function(){
+				$(this).trigger("pagecreate");
+			});
+			$.ajax({
+				url: $(this).attr('data-href'),
+				beforeSend: function(xhr) {
+					//xhr.setRequestHeader("Authorization", header);
+					xhr.setRequestHeader("Accept", "application/json");
+					$.mobile.showPageLoadingMsg(true);
+				},
+				complete: function() {
+					$.mobile.hidePageLoadingMsg();
+				},
+				success: function (data) {
+					var objects = data.value;
+					console.log(objects);
+					$.mobile.changePage("#similarObjects");
+					$('#similarObjects #objectsList').empty();
+					for(i = 0; i < objects.length; i++){
+						$('#similarObjects #objectsList').append('<li data-theme="c"><a class="object" data-href="'+objects[i].href+'" data-transition="slide">'+objects[i].title+'</a></li>');
+					}
+					$('#similarObjects #objectsList').listview('refresh');
+				},
+				error: function (request,error) {
+					console.log(error);
+					toastr.error('Username and Password donot match!');
+				}
+			});
+		}
     });
 	
 	$('#editObject').click(function(){
