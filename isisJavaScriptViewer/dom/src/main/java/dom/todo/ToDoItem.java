@@ -115,6 +115,7 @@ public class ToDoItem implements Comparable<ToDoItem> /*, Locatable*/ { // GMAP3
     // {{ Description
     private String description;
 
+    @javax.jdo.annotations.Column(allowsNull="false")
     @RegEx(validation = "\\w[@&:\\-\\,\\.\\+ \\w]*")
     // words, spaces and selected punctuation
     @MemberOrder(sequence = "1")
@@ -132,8 +133,8 @@ public class ToDoItem implements Comparable<ToDoItem> /*, Locatable*/ { // GMAP3
     @javax.jdo.annotations.Persistent(defaultFetchGroup="true")
     private LocalDate dueBy;
 
+    @javax.jdo.annotations.Column(allowsNull="true")
     @MemberOrder(name="Detail", sequence = "3")
-    @Optional
     public LocalDate getDueBy() {
         return dueBy;
     }
@@ -157,6 +158,7 @@ public class ToDoItem implements Comparable<ToDoItem> /*, Locatable*/ { // GMAP3
     // {{ Category
     private Category category;
 
+    @javax.jdo.annotations.Column(allowsNull="true")
     @MemberOrder(sequence = "2")
     public Category getCategory() {
         return category;
@@ -171,6 +173,7 @@ public class ToDoItem implements Comparable<ToDoItem> /*, Locatable*/ { // GMAP3
     // {{ OwnedBy (property)
     private String ownedBy;
 
+    @javax.jdo.annotations.Column(allowsNull="false")
     @Hidden
     // not shown in the UI
     public String getOwnedBy() {
