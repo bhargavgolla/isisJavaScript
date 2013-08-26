@@ -11,4 +11,4 @@ GSoC 2013 Project to create a JS viewer for [Apache ISIS](http://isis.apache.org
 * [toastr](https://github.com/CodeSeven/toastr/)
 
 ## License
-isisJavaScript is under [Apache License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
+isisJavaScript is licensed under [Apache License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
