@@ -51,13 +51,13 @@ var updateProperty = function(selector){
 			$.mobile.hidePageLoadingMsg();
 		},
 		success: function (data) {
-			alert('Object updated successfully');
+			toastr.success('Object updated successfully');
 			$(selector).attr('data-changed',"0");
 			$('#versionSequence').val(version);
 		},
 		error: function (request,error) {
 			console.log(error);
-			alert("Object couldn't be updated!");
+			toastr.error("Object couldn't be updated!");
 		}
 	});
 }
@@ -70,7 +70,7 @@ $(document).ready(function(){
 		"onclick": null,
 		"fadeIn": 300,
 		"fadeOut": 1000,
-		"timeOut": 1000,
+		"timeOut": 3000,
 		"extendedTimeOut": 1000
 	};
     $('#loginButton').click(function(e,data){
@@ -104,11 +104,11 @@ $(document).ready(function(){
 				},
 				error: function (request,error) {
 					console.log(error);
-					alert('Username and Password donot match!');
+					toastr.error('Username and Password donot match!');
 				}
 			});
 		} else {
-			alert('All fields are required.');
+			toastr.error('All fields are required.');
 		}
     });
 	$('.service').livequery("click",function(){
@@ -134,7 +134,7 @@ $(document).ready(function(){
 			},
 			error: function (request,error) {
 				console.log(error);
-				alert('Username and Password donot match!');
+				toastr.error('Username and Password donot match!');
 			}
 		});
     });
@@ -169,7 +169,7 @@ $(document).ready(function(){
 				},
 				error: function (request,error) {
 					console.log(error);
-					alert('Username and Password donot match!');
+					toastr.error('Username and Password donot match!');
 				}
 			});
 		}
@@ -228,7 +228,7 @@ $(document).ready(function(){
 			},
 			error: function (request,error) {
 				console.log(error);
-				alert('Username and Password donot match!');
+				toastr.error('Username and Password donot match!');
 			}
 		});
     });
@@ -269,6 +269,78 @@ $(document).ready(function(){
 		}
     });
 	
+	$('.objectAction').livequery("click",function(){
+		var disabled = $(this).attr('data-disabled');
+		if(disabled != 0){
+			toastr.warning(disabled);
+		} else{
+			$.ajax({
+				url: $(this).attr('data-href'),
+				beforeSend: function(xhr) {
+					//xhr.setRequestHeader("Authorization", header);
+					xhr.setRequestHeader("Accept", "application/json");
+					$.mobile.showPageLoadingMsg(true);
+				},
+				complete: function() {
+					$.mobile.hidePageLoadingMsg();
+				},
+				success: function (data) {
+					var links = data.links;
+					console.log(links);
+					/*for(i = 0; i < links.length; i++){
+						if(links[i].indexOf("invoke") != -1){
+							break;
+						}
+					}
+					var invoke_url = links[i].href;*/
+					var invoke_url = links[2].href;
+					var invoke_method = links[2].method;
+					if(invoke_method == "GET"){
+						$.ajax({
+							type: invoke_method,
+							url: invoke_url,
+							beforeSend: function(xhr) {
+								//xhr.setRequestHeader("Authorization", header);
+								xhr.setRequestHeader("Accept", "application/json");
+								$.mobile.showPageLoadingMsg(true);
+							},
+							complete: function() {
+								$.mobile.hidePageLoadingMsg();
+							},
+							success: function (data) {
+								var resultType = data.resulttype;
+								var objects = data.result.value;
+								if(resultType == "list"){
+									/*$('#similarToObjects').load('../Content/partials/similarObjects.html', function(){
+										$(this).trigger("pagecreate");
+									});*/
+									$.mobile.changePage("#similarToObjects");
+									$('#similarToObjects #objectsSimilarList').empty();
+									console.log(objects);
+									for(i = 0; i < objects.length; i++){
+										console.log("Children length: "+$('#similarToObjects #objectsSimilarList').children().length);
+										$('#similarToObjects #objectsSimilarList').append('<li data-theme="c"><a class="object" data-href="'+objects[i].href+'" data-transition="slide">'+objects[i].title+'</a></li>');
+										console.log("Children length: "+$('#similarToObjects #objectsSimilarList').children().length);
+									}
+									console.log("Children length: "+$('#similarToObjects #objectsSimilarList').children().length);
+									$('#similarToObjects #objectsSimilarList').listview('refresh');
+								}
+							},
+							error: function (request,error) {
+								console.log(error);
+								toastr.error('Username and Password donot match!');
+							}
+						});
+					}
+				},
+				error: function (request,error) {
+					console.log(error);
+					toastr.error('Username and Password donot match!');
+				}
+			});
+		}
+    });
+	
 	$('#editObject').click(function(){
 		var newDetails = JSON.stringify($('.objectDetails form').serializeObject());
 		console.log(newDetails);
@@ -287,11 +359,11 @@ $(document).ready(function(){
 			},
 			success: function (data) {
 				$('#versionSequence').val(version);
-				alert('Object updated successfully');
+				toastr.success('Object updated successfully');
 			},
 			error: function (request,error) {
 				console.log(error);
-				alert('Username and Password donot match!');
+				toastr.error('Username and Password donot match!');
 			}
 		});
 	});
@@ -312,12 +384,12 @@ $(document).ready(function(){
 				$.mobile.hidePageLoadingMsg();
 			},
 			success: function (data) {
-				alert('Object created successfully');
+				toastr.success('Object created successfully');
 				$.mobile.changePage("#service");
 			},
 			error: function (request,error) {
 				console.log(error);
-				alert('Username and Password donot match!');
+				toastr.error('Username and Password donot match!');
 			}
 		});
 	});
