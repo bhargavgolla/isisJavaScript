@@ -25,6 +25,19 @@ var initializeInputs = function(){
 	});
 }
 
+var getDateString = function(dateArray){
+	var dateString = "";
+	if(dateArray.length == 3){
+		for(var i=0;i<3;i++){
+			pad = "-00";
+			dateArray[i] = dateArray[i].toString();
+			pad = pad.substring(0, pad.length - dateArray[i].length) + dateArray[i];
+			dateString += pad;
+		}
+	}
+	return dateString;
+}
+
 var updateProperty = function(selector){
 	var propertyValue = $(selector).val();
 	if(propertyValue == "on"){
@@ -379,6 +392,53 @@ $(document).ready(function(){
 									toastr.error('Username and Password donot match!');
 								}
 							});
+						} else if(params.length == 4){
+							$( "#duplicateObject .duplicateDetails form div" ).each(function( index ){
+								if(index < params.length){
+									$(this).empty();
+									$(this).append('<label for="'+params[index].id+'">'+params[index].name+'</label>');
+									if(typeof params[index].choices != 'undefined'){
+										console.log("In choices "+params[index].choices);
+										$(this).append('<select name="'+params[index].id+'" id="'+params[index].id+'" ></select>');
+										for (var i = 0; i < params[index].choices.length; i++) {
+											if(params[index].choices[i] == params[index].default){
+												$(this).children("select").append($('<option />',{'value': params[index].choices[i], 'selected': 'selected'}).text(params[index].choices[i]));
+											} else {
+												$(this).children("select").append($('<option />',{'value': params[index].choices[i]}).text(params[index].choices[i]));
+											}
+										}
+										$(this).children("select").selectmenu();
+										$(this).children("select").selectmenu( "refresh", true );
+									} else {
+										if(params[index].id.indexOf("due") != -1){
+											console.log("Date: "+params[index].default[0].length);
+											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+getDateString(params[index].default)+'" type="date">');
+										} else if(params[index].id.indexOf("cost") != -1){
+											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+params[index].default+'" type="number">');
+										} else{
+											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+params[index].default+'" >');
+										}
+									}
+								}
+							});
+							$('#duplicateObject .duplicateDetails .createObject').attr('data-href',invoke_url);
+							$.mobile.changePage("#duplicateObject");
+						} else if(params.length == 1){
+							$( "#updateObject .updateDetails form div" ).each(function( index ){
+								if(index < params.length){
+									$(this).empty();
+									$(this).append('<label for="'+params[index].id+'">'+params[index].name+'</label>');
+									if(params[index].id.indexOf("Date") != -1){
+										$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="" type="date">');
+									} else if(params[index].id.indexOf("Cost") != -1){
+										$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="" type="number">');
+									} else{
+										$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+params[index].default+'" >');
+									}
+								}
+							});
+							$('#updateObject .updateDetails .updateObject').attr('data-href',invoke_url);
+							$.mobile.changePage("#updateObject");
 						}
 					}
 				},
@@ -389,6 +449,37 @@ $(document).ready(function(){
 			});
 		}
     });
+	
+	$('.createObject, .updateObject').click(function(){
+		var newDetails = JSON.stringify($(this).parent().children('form').serializeObject());
+		console.log(newDetails);
+		var updateUrl = $(this).attr('data-href');
+		var toastMsg = "Object updated sucessfully";
+		if(updateUrl.indexOf("duplicate") != -1){
+			toastMsg = "Object duplicated sucessfully";
+		}
+		$.ajax({
+			type: "POST",
+			url: updateUrl,
+			data: newDetails,
+			beforeSend: function(xhr) {
+				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Accept", "application/json");
+				$.mobile.showPageLoadingMsg(true);
+			},
+			complete: function() {
+				$.mobile.hidePageLoadingMsg();
+			},
+			success: function (data) {
+				toastr.success(toastMsg);
+				$.mobile.changePage("#service");
+			},
+			error: function (request,error) {
+				console.log(error);
+				toastr.error('Username and Password donot match!');
+			}
+		});
+	});
 	
 	$('#editObject').click(function(){
 		var newDetails = JSON.stringify($('.objectDetails form').serializeObject());
