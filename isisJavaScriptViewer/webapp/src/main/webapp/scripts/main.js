@@ -62,6 +62,52 @@ var updateProperty = function(selector){
 	});
 }
 
+var updateObjectPage = function(objectDetails, put_url){
+	$('#objectCollectionsList').empty();
+	$('#objectActionsList').empty();
+	for(var detail in objectDetails){
+		if(objectDetails[detail].memberType == "property"){
+			if($("#"+detail).length > 0){
+				if(typeof objectDetails[detail].value == 'boolean'){
+					if(objectDetails[detail].value){
+						$("#"+detail).val('on');
+						$("#"+detail).slider('refresh');
+					} else {
+						$("#"+detail).val('off');
+						$("#"+detail).slider('refresh');
+					}
+				} else {
+					$("#"+detail).val(objectDetails[detail].value);
+				}
+				$("#"+detail).attr('data-href',objectDetails[detail].links[0].href);
+			}
+		} else if(objectDetails[detail].memberType == "collection"){
+			if(objectDetails[detail].disabledReason == null){
+							$('#objectCollectionsList').append('<li data-theme="c"><a class="objectCollection" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="0">'+detail+'</a></li>');
+			} else {
+				$('#objectCollectionsList').append('<li data-theme="c"><a class="objectCollection" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="'+objectDetails[detail].disabledReason+'">'+detail+'</a></li>');
+			}
+		} else if(objectDetails[detail].memberType == "action"){
+			if(objectDetails[detail].disabledReason == null){
+				$('#objectActionsList').append('<li data-theme="c"><a class="objectAction" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="0">'+detail+'</a></li>');
+			} else {
+				$('#objectActionsList').append('<li data-theme="c"><a class="objectAction" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="'+objectDetails[detail].disabledReason+'">'+detail+'</a></li>');
+			}
+		}
+	}
+	if ($('#objectCollectionsList').hasClass('ui-listview')) {
+		$('#objectCollectionsList').listview('refresh');
+	} else {
+		$('#objectCollectionsList').trigger('create');
+	}
+	if ($('#objectActionsList').hasClass('ui-listview')) {
+		$('#objectActionsList').listview('refresh');
+	} else {
+		$('#objectActionsList').trigger('create');
+	}
+	$('#editObject').attr('data-href',put_url);
+}
+
 $(document).ready(function(){
 	//initializeInputs();
 	toastr.options = {
@@ -191,40 +237,7 @@ $(document).ready(function(){
 				var put_url = data.links[2].href;
 				console.log(objectDetails);
 				$.mobile.changePage("#object");
-				$('#objectCollectionsList').empty();
-				for(var detail in objectDetails){
-					if(objectDetails[detail].memberType == "property"){
-						if($("#"+detail).length > 0){
-							if(typeof objectDetails[detail].value == 'boolean'){
-								if(objectDetails[detail].value){
-									$("#"+detail).val('on');
-								}
-							} else {
-								$("#"+detail).val(objectDetails[detail].value);
-							}
-							$("#"+detail).attr('data-href',objectDetails[detail].links[0].href);
-						}
-					} else if(objectDetails[detail].memberType == "collection"){
-						if(objectDetails[detail].disabledReason == null){
-							$('#objectCollectionsList').append('<li data-theme="c"><a class="objectCollection" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="0">'+detail+'</a></li>');
-						} else {
-							$('#objectCollectionsList').append('<li data-theme="c"><a class="objectCollection" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="'+objectDetails[detail].disabledReason+'">'+detail+'</a></li>');
-						}
-					} else if(objectDetails[detail].memberType == "action"){
-						if(objectDetails[detail].disabledReason == null){
-							$('#objectActionsList').append('<li data-theme="c"><a class="objectAction" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="0">'+detail+'</a></li>');
-						} else {
-							$('#objectActionsList').append('<li data-theme="c"><a class="objectAction" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="'+objectDetails[detail].disabledReason+'">'+detail+'</a></li>');
-						}
-					}
-				}
-				if ($('#objectCollectionsList').hasClass('ui-listview')) {
-					$('#objectCollectionsList').listview('refresh');
-				} else {
-					$('#objectCollectionsList').trigger('create');
-				}
-				//$('#objectCollectionsList').listview('refresh');
-				$('#editObject').attr('data-href',put_url);
+				updateObjectPage(objectDetails, put_url);
 			},
 			error: function (request,error) {
 				console.log(error);
@@ -331,6 +344,42 @@ $(document).ready(function(){
 								toastr.error('Username and Password donot match!');
 							}
 						});
+					} else if(invoke_method == "POST"){
+						var params = data.parameters;
+						if(params.length <= 0){
+							$.ajax({
+								type: invoke_method,
+								url: invoke_url,
+								beforeSend: function(xhr) {
+									//xhr.setRequestHeader("Authorization", header);
+									xhr.setRequestHeader("Accept", "application/json");
+									$.mobile.showPageLoadingMsg(true);
+								},
+								complete: function() {
+									$.mobile.hidePageLoadingMsg();
+								},
+								success: function (data) {
+									var resultType = data.resulttype;
+									var objects = data.result.value;
+									if(resultType == "list"){
+										$.mobile.changePage("#objects");
+										$('#objects #objectsList').empty();
+										console.log(objects);
+										for(i = 0; i < objects.length; i++){
+											$('#objects #objectsList').append('<li data-theme="c"><a class="object" data-href="'+objects[i].href+'" data-transition="slide">'+objects[i].title+'</a></li>');
+										}
+										$('#objects #objectsList').listview('refresh');
+									} else if(resultType == "domainobject"){
+										updateObjectPage(data.result.members, data.result.links[2].href);
+										$.mobile.changePage("#object");
+									}
+								},
+								error: function (request,error) {
+									console.log(error);
+									toastr.error('Username and Password donot match!');
+								}
+							});
+						}
 					}
 				},
 				error: function (request,error) {
