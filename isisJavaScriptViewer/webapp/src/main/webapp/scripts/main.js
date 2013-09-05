@@ -359,6 +359,7 @@ $(document).ready(function(){
 						});
 					} else if(invoke_method == "POST"){
 						var params = data.parameters;
+						var id = data.id;
 						if(params.length <= 0){
 							$.ajax({
 								type: invoke_method,
@@ -424,21 +425,82 @@ $(document).ready(function(){
 							$('#duplicateObject .duplicateDetails .createObject').attr('data-href',invoke_url);
 							$.mobile.changePage("#duplicateObject");
 						} else if(params.length == 1){
-							$( "#updateObject .updateDetails form div" ).each(function( index ){
-								if(index < params.length){
-									$(this).empty();
-									$(this).append('<label for="'+params[index].id+'">'+params[index].name+'</label>');
-									if(params[index].id.indexOf("Date") != -1){
-										$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="" type="date">');
-									} else if(params[index].id.indexOf("Cost") != -1){
-										$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="" type="number">');
-									} else{
-										$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+params[index].default+'" >');
+							if(id === "add"){
+								$('#addDependency').load('../Content/partials/addDependency.html', function(){
+									$(this).trigger("pagecreate");
+								});
+								$.ajax({
+									url: isisURL+"restful/services/toDoItems/actions/allToDos/invoke",
+									beforeSend: function(xhr) {
+										//xhr.setRequestHeader("Authorization", header);
+										xhr.setRequestHeader("Accept", "application/json");
+										$.mobile.showPageLoadingMsg(true);
+									},
+									complete: function() {
+										$.mobile.hidePageLoadingMsg();
+									},
+									success: function (data) {
+										var objects = data.result.value;
+										console.log(objects);
+										for(i = 0; i < objects.length; i++){
+											if(invoke_url.indexOf(objects[i].href) == -1){
+												$("#addDependency #addDependencyMenu").append($('<option />',{'value': objects[i].href}).text(objects[i].title));
+											} else {
+												$("#addDependency #addDependencyMenu").append($('<option />',{'value': objects[i].href, 'disabled': 'disabled'}).text(objects[i].title));
+											}
+										}
+										$("#addDependency #addDependencyMenu").selectmenu();
+										$("#addDependency #addDependencyMenu").selectmenu( "refresh", true );
+										$("a.addDependency").attr("data-href", invoke_url);
+										$.mobile.changePage("#addDependency");
+									},
+									error: function (request,error) {
+										console.log(error);
+										toastr.error('Username and Password donot match!');
 									}
+								});
+							} else if(id === "remove"){
+								$('#removeDependency').load('../Content/partials/removeDependency.html', function(){
+									var objects = params[0].choices;
+									console.log(objects);
+									$.mobile.changePage("#removeDependency");
+									for(i = 0; i < objects.length; i++){
+										console.log("In loop"+objects);
+										$("#removeDependency #removeDependencyMenu").append($('<option />',{'value': objects[i].href}).text(objects[i].title));
+									}
+									$("#removeDependency #removeDependencyMenu").selectmenu();
+									$("#removeDependency #removeDependencyMenu").selectmenu( "refresh", true );
+									$("a.removeDependency").attr("data-href", invoke_url);
+									$(this).trigger("pagecreate");
+								});
+								/*var objects = params[0].choices;
+								console.log(objects);
+								$.mobile.changePage("#removeDependency");
+								for(i = 0; i < objects.length; i++){
+									console.log("In loop"+objects);
+									$("#removeDependency #removeDependencyMenu").append($('<option />',{'value': objects[i].href}).text(objects[i].title));
 								}
-							});
-							$('#updateObject .updateDetails .updateObject').attr('data-href',invoke_url);
-							$.mobile.changePage("#updateObject");
+								$("#removeDependency #removeDependencyMenu").selectmenu();
+								$("#removeDependency #removeDependencyMenu").selectmenu( "refresh", true );
+								$("a.removeDependency").attr("data-href", invoke_url);*/
+								//$.mobile.changePage("#removeDependency");
+							} else {
+								$( "#updateObject .updateDetails form div" ).each(function( index ){
+									if(index < params.length){
+										$(this).empty();
+										$(this).append('<label for="'+params[index].id+'">'+params[index].name+'</label>');
+										if(params[index].id.indexOf("Date") != -1){
+											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="" type="date">');
+										} else if(params[index].id.indexOf("Cost") != -1){
+											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="" type="number">');
+										} else{
+											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+params[index].default+'" >');
+										}
+									}
+								});
+								$('#updateObject .updateDetails .updateObject').attr('data-href',invoke_url);
+								$.mobile.changePage("#updateObject");
+							}
 						}
 					}
 				},
@@ -449,6 +511,64 @@ $(document).ready(function(){
 			});
 		}
     });
+	
+	$("a.addDependency").livequery("click",function(){
+		var objectHref = $("#addDependency #addDependencyMenu").val();
+		var dependencyObject = {"toDoItem":{"value": { "href": objectHref } }} ;
+		dependencyObject = JSON.stringify(dependencyObject);
+		console.log(dependencyObject);
+		$.ajax({
+			type: "POST",
+			url: $(this).attr('data-href'),
+			data: dependencyObject,
+			beforeSend: function(xhr) {
+				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Accept", "application/json");
+				$.mobile.showPageLoadingMsg(true);
+			},
+			complete: function() {
+				$.mobile.hidePageLoadingMsg();
+			},
+			success: function (data) {
+				window.history.back();
+				updateObjectPage(data.result.members, data.result.links[2].href);
+				toastr.success('Object dependency added successfully');
+			},
+			error: function (request,error) {
+				console.log(error);
+				toastr.error('Username and Password donot match!');
+			}
+		});
+	});
+	
+	$("a.removeDependency").livequery("click",function(){
+		var objectHref = $("#removeDependency #removeDependencyMenu").val();
+		var dependencyObject = {"toDoItem":{"value": { "href": objectHref } }} ;
+		dependencyObject = JSON.stringify(dependencyObject);
+		console.log(dependencyObject);
+		$.ajax({
+			type: "POST",
+			url: $(this).attr('data-href'),
+			data: dependencyObject,
+			beforeSend: function(xhr) {
+				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Accept", "application/json");
+				$.mobile.showPageLoadingMsg(true);
+			},
+			complete: function() {
+				$.mobile.hidePageLoadingMsg();
+			},
+			success: function (data) {
+				window.history.back();
+				updateObjectPage(data.result.members, data.result.links[2].href);
+				toastr.success('Object dependency removed successfully');
+			},
+			error: function (request,error) {
+				console.log(error);
+				toastr.error('Username and Password donot match!');
+			}
+		});
+	});
 	
 	$('.createObject, .updateObject').click(function(){
 		var newDetails = JSON.stringify($(this).parent().children('form').serializeObject());
@@ -507,6 +627,8 @@ $(document).ready(function(){
 			}
 		});
 	});
+	
+	
 	
 	$('#createObject').click(function(){
 		var newDetails = JSON.stringify($('.newObjectDetails form').serializeObject());
