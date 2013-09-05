@@ -16,4 +16,5 @@ isisJavaScript is licensed under [Apache License v2.0](http://www.apache.org/lic
 ##YouTube Demos
 List of youtube demos prepared during GSoC 2013
 * [Demo 1 - Dt. Jul 31, 2013](http://youtu.be/AeG0qjNC17c)
-* [Demo 2 - Dt. Aug 21, 2013](http://youtu.be/mnvXvqFyU2w)
+* [Demo 2 - Dt. Aug 21, 2013](http://youtu.be/mnvXvqFyU2w)	
+* [Demo 3 - Dt. Sep 6, 2013](http://youtu.be/Y5eVBY4Kh1s)	
