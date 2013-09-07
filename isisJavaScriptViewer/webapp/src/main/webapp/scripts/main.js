@@ -69,7 +69,7 @@ var updateProperty = function(selector){
 			$('#versionSequence').val(version);
 		},
 		error: function (request,error) {
-			console.log(error);
+			console.log(request.responseText);
 			toastr.error("Object couldn't be updated!");
 		}
 	});
@@ -162,7 +162,7 @@ $(document).ready(function(){
 					$('#servicesList').listview('refresh');
 				},
 				error: function (request,error) {
-					console.log(error);
+					console.log(request.responseText);
 					toastr.error('Username and Password donot match!');
 				}
 			});
@@ -192,8 +192,8 @@ $(document).ready(function(){
 				$('#collectionsList').listview('refresh');
 			},
 			error: function (request,error) {
-				console.log(error);
-				toastr.error('Username and Password donot match!');
+				console.log(request.responseText);
+				toastr.error("Couldn't fetch collections");
 			}
 		});
     });
@@ -227,8 +227,8 @@ $(document).ready(function(){
 					$('#objectsList').listview('refresh');
 				},
 				error: function (request,error) {
-					console.log(error);
-					toastr.error('Username and Password donot match!');
+					console.log(request.responseText);
+					toastr.error("Couldn't fetch objects");
 				}
 			});
 		}
@@ -253,8 +253,8 @@ $(document).ready(function(){
 				updateObjectPage(objectDetails, put_url);
 			},
 			error: function (request,error) {
-				console.log(error);
-				toastr.error('Username and Password donot match!');
+				console.log(request.responseText);
+				toastr.error("Couldn't fetch object's properties");
 			}
 		});
     });
@@ -288,8 +288,8 @@ $(document).ready(function(){
 					$('#similarObjects #objectsList').listview('refresh');
 				},
 				error: function (request,error) {
-					console.log(error);
-					toastr.error('Username and Password donot match!');
+					console.log(request.responseText);
+					toastr.error("Couldn't fetch collections");
 				}
 			});
 		}
@@ -353,8 +353,8 @@ $(document).ready(function(){
 								}
 							},
 							error: function (request,error) {
-								console.log(error);
-								toastr.error('Username and Password donot match!');
+								console.log(request.responseText);
+								toastr.error("Couldn't invoke action");
 							}
 						});
 					} else if(invoke_method == "POST"){
@@ -389,8 +389,8 @@ $(document).ready(function(){
 									}
 								},
 								error: function (request,error) {
-									console.log(error);
-									toastr.error('Username and Password donot match!');
+									console.log(request.responseText);
+									toastr.error("Couldn't invoke action");
 								}
 							});
 						} else if(params.length == 4){
@@ -455,8 +455,8 @@ $(document).ready(function(){
 										$.mobile.changePage("#addDependency");
 									},
 									error: function (request,error) {
-										console.log(error);
-										toastr.error('Username and Password donot match!');
+										console.log(request.responseText);
+										toastr.error("Couldn't invoke action");
 									}
 								});
 							} else if(id === "remove"){
@@ -505,8 +505,8 @@ $(document).ready(function(){
 					}
 				},
 				error: function (request,error) {
-					console.log(error);
-					toastr.error('Username and Password donot match!');
+					console.log(request.responseText);
+					toastr.error("Couldn't invoke action");
 				}
 			});
 		}
@@ -535,8 +535,9 @@ $(document).ready(function(){
 				toastr.success('Object dependency added successfully');
 			},
 			error: function (request,error) {
-				console.log(error);
-				toastr.error('Username and Password donot match!');
+				var response = eval('(' + request.responseText + ')');
+				console.log(response["x-ro-invalidReason"]);
+				toastr.error("Dependency couldn't be added. "+response["x-ro-invalidReason"]);
 			}
 		});
 	});
@@ -564,8 +565,11 @@ $(document).ready(function(){
 				toastr.success('Object dependency removed successfully');
 			},
 			error: function (request,error) {
-				console.log(error);
-				toastr.error('Username and Password donot match!');
+				/* console.log(error);
+				toastr.error('Username and Password donot match!'); */
+				var response = eval('(' + request.responseText + ')');
+				console.log(response["x-ro-invalidReason"]);
+				toastr.error("Dependency couldn't be removed. "+response["x-ro-invalidReason"]);
 			}
 		});
 	});
@@ -595,8 +599,8 @@ $(document).ready(function(){
 				$.mobile.changePage("#service");
 			},
 			error: function (request,error) {
-				console.log(error);
-				toastr.error('Username and Password donot match!');
+				console.log(request.responseText);
+				toastr.error("Object couldn't be updated");
 			}
 		});
 	});
@@ -622,8 +626,8 @@ $(document).ready(function(){
 				toastr.success('Object updated successfully');
 			},
 			error: function (request,error) {
-				console.log(error);
-				toastr.error('Username and Password donot match!');
+				console.log(request.responseText);
+				toastr.error("Object couldn't be updated");
 			}
 		});
 	});
@@ -650,8 +654,8 @@ $(document).ready(function(){
 				$.mobile.changePage("#service");
 			},
 			error: function (request,error) {
-				console.log(error);
-				toastr.error('Username and Password donot match!');
+				console.log(request.responseText);
+				toastr.error("Object couldn't be created");
 			}
 		});
 	});
