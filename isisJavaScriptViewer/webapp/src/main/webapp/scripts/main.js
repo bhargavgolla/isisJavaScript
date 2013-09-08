@@ -31,8 +31,8 @@ $(document).ready(function(){
 				},
 				success: function (result) {
 					console.log(result);
-					$('#homePage').load('../Content/partials/homePage.html', function(){
-							var homePageList = '#homePage #homePageList';
+					$('#home').load('../Content/partials/homePage.html', function(){
+							var homePageList = '#home #homePageList';
 							$(homePageList).empty();
 							for(i = 0; i < result.links.length ; i++){
 								if(result.links[i].rel.indexOf("self") == -1 && result.links[i].rel.indexOf("domain-types") == -1){
@@ -48,7 +48,7 @@ $(document).ready(function(){
 							$(homePageList).listview().listview('refresh');
 							$(this).trigger("pagecreate");
 					});
-					$.mobile.changePage("#homePage");
+					$.mobile.changePage("#home");
 					/* $.mobile.changePage("#services");
 					$('#servicesList').empty();
 					for(i = 0; i < result.value.length ; i++){
@@ -67,8 +67,9 @@ $(document).ready(function(){
     });
 	
 	$('a.homePageObject').livequery("click",function(){
+		var resource_url = $(this).attr('data-href');
 		$.ajax({
-			url: $(this).attr('data-href'),
+			url: resource_url,
 			beforeSend: function(xhr) {
 				//xhr.setRequestHeader("Authorization", header);
 				xhr.setRequestHeader("Accept", "application/json");
@@ -78,18 +79,30 @@ $(document).ready(function(){
 				$.mobile.hidePageLoadingMsg();
 			},
 			success: function (result) {
-				var collections = result.members;
-				console.log(collections);
-				$.mobile.changePage("#service");
-				$('#collectionsList').empty();
-				for(var collection in collections){
-					$('#collectionsList').append('<li data-theme="c"><a class="collection" data-id="'+collections[collection].id+'" data-href="'+collections[collection].links[0].href+'" data-transition="slide">'+collection+'</a></li>');
+				console.log(result);
+				if (resource_url.indexOf("user") != -1){
+					$('#user').load('../Content/partials/user.html', function(){
+							if ( result.userName != null){
+								$('#userNameText').html(result.userName);
+							} else if ( result.friendlyName != null){
+								$('#friendlyNameText').html(result.friendlyName);
+							} else if ( result.email != null){
+								$('#emailText').html(result.email);
+							} else if ( result.roles.length != 0){
+								$('#rolesText').html(result.roles);
+							}
+							$(this).trigger("pagecreate");
+					});
+					$.mobile.changePage("#user");
+				} else if (resource_url.indexOf("version") != -1){
+					$.mobile.changePage("#version");
+				} else if (resource_url.indexOf("services") != -1){
+					$.mobile.changePage("#services");
 				}
-				$('#collectionsList').listview('refresh');
 			},
 			error: function (request,error) {
 				console.log(request.responseText);
-				toastr.error("Couldn't fetch collections");
+				toastr.error("Couldn't fetch details");
 			}
 		});
     });
