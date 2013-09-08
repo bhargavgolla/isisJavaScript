@@ -1,128 +1,6 @@
 var isisURL, username, password, header;
 
-$.fn.serializeObject = function()
-{
-    var o = {};
-    var a = this.serializeArray();
-    $.each(a, function() {
-        if (o[this.name] !== undefined) {
-            if (!o[this.name].push) {
-                o[this.name] = [o[this.name]];
-            }
-			v = {"value":this.value};
-            o[this.name].push(v);
-        } else {
-			v = {"value":this.value};
-            o[this.name] = v;
-        }
-    });
-    return o;
-}
-
-var initializeInputs = function(){
-	$('.objectDetails input,.objectDetails select,.objectDetails textarea').change(function() {
-		$(this).attr('data-changed',"1");
-	});
-}
-
-var getDateString = function(dateArray){
-	var dateString = "";
-	if(dateArray.length == 3){
-		for(var i=0;i<3;i++){
-			pad = "-00";
-			dateArray[i] = dateArray[i].toString();
-			pad = pad.substring(0, pad.length - dateArray[i].length) + dateArray[i];
-			dateString += pad;
-		}
-	}
-	return dateString;
-}
-
-var updateProperty = function(selector){
-	var propertyValue = $(selector).val();
-	if(propertyValue == "on"){
-		propertyValue = true;
-	} else if(propertyValue == "off"){
-		propertyValue = false;
-	}
-	var propertyData = {
-		"value":propertyValue
-	};
-	var version = parseInt($('#versionSequence').val()) + 1;
-	propertyData = JSON.stringify(propertyData);
-	$.ajax({
-		type: "PUT",
-		url: $(selector).attr('data-href'),
-		dataType: 'json',
-		data: propertyData,
-		beforeSend: function(xhr) {
-			//xhr.setRequestHeader("Authorization", header);
-			xhr.setRequestHeader("Accept", "application/json");
-			$.mobile.showPageLoadingMsg(true);
-		},
-		complete: function() {
-			$.mobile.hidePageLoadingMsg();
-		},
-		success: function (data) {
-			toastr.success('Object updated successfully');
-			$(selector).attr('data-changed',"0");
-			$('#versionSequence').val(version);
-		},
-		error: function (request,error) {
-			console.log(request.responseText);
-			toastr.error("Object couldn't be updated!");
-		}
-	});
-}
-
-var updateObjectPage = function(objectDetails, put_url){
-	$('#objectCollectionsList').empty();
-	$('#objectActionsList').empty();
-	for(var detail in objectDetails){
-		if(objectDetails[detail].memberType == "property"){
-			if($("#"+detail).length > 0){
-				if(typeof objectDetails[detail].value == 'boolean'){
-					if(objectDetails[detail].value){
-						$("#"+detail).val('on');
-						$("#"+detail).slider('refresh');
-					} else {
-						$("#"+detail).val('off');
-						$("#"+detail).slider('refresh');
-					}
-				} else {
-					$("#"+detail).val(objectDetails[detail].value);
-				}
-				$("#"+detail).attr('data-href',objectDetails[detail].links[0].href);
-			}
-		} else if(objectDetails[detail].memberType == "collection"){
-			if(objectDetails[detail].disabledReason == null){
-							$('#objectCollectionsList').append('<li data-theme="c"><a class="objectCollection" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="0">'+detail+'</a></li>');
-			} else {
-				$('#objectCollectionsList').append('<li data-theme="c"><a class="objectCollection" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="'+objectDetails[detail].disabledReason+'">'+detail+'</a></li>');
-			}
-		} else if(objectDetails[detail].memberType == "action"){
-			if(objectDetails[detail].disabledReason == null){
-				$('#objectActionsList').append('<li data-theme="c"><a class="objectAction" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="0">'+detail+'</a></li>');
-			} else {
-				$('#objectActionsList').append('<li data-theme="c"><a class="objectAction" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="'+objectDetails[detail].disabledReason+'">'+detail+'</a></li>');
-			}
-		}
-	}
-	if ($('#objectCollectionsList').hasClass('ui-listview')) {
-		$('#objectCollectionsList').listview('refresh');
-	} else {
-		$('#objectCollectionsList').trigger('create');
-	}
-	if ($('#objectActionsList').hasClass('ui-listview')) {
-		$('#objectActionsList').listview('refresh');
-	} else {
-		$('#objectActionsList').trigger('create');
-	}
-	$('#editObject').attr('data-href',put_url);
-}
-
 $(document).ready(function(){
-	//initializeInputs();
 	toastr.options = {
 		"debug": false,
 		"positionClass": "toast-bottom-full-width",
@@ -142,8 +20,7 @@ $(document).ready(function(){
 			}
 			header = "Basic " + $.base64.encode(username + ":" + password);
 			$.ajax({
-				url: isisURL+'restful/services/', //Localbox
-				//url: isisURL+'services/', //.NET
+				url: isisURL, //Localbox
 				beforeSend: function(xhr) {
 					//xhr.setRequestHeader("Authorization", header);
 					xhr.setRequestHeader("Accept", "application/json");
@@ -153,13 +30,31 @@ $(document).ready(function(){
 					$.mobile.hidePageLoadingMsg();
 				},
 				success: function (result) {
-					console.log(result.value);
-					$.mobile.changePage("#services");
+					console.log(result);
+					$('#homePage').load('../Content/partials/homePage.html', function(){
+							var homePageList = '#homePage #homePageList';
+							$(homePageList).empty();
+							for(i = 0; i < result.links.length ; i++){
+								if(result.links[i].rel.indexOf("self") == -1 && result.links[i].rel.indexOf("domain-types") == -1){
+									var homePageObjectHref = result.links[i].href;
+									console.log(homePageObjectHref);
+									var homePageObjectName = result.links[i].rel.split("/");
+									console.log(homePageObjectName);
+									homePageObjectName = homePageObjectName[1];
+									console.log(homePageObjectName);
+									$(homePageList).append('<li data-theme="c"><a class="homePageObject" data-href="'+homePageObjectHref+'" data-transition="slide">'+homePageObjectName+'</a></li>');
+								}
+							}
+							$(homePageList).listview().listview('refresh');
+							$(this).trigger("pagecreate");
+					});
+					$.mobile.changePage("#homePage");
+					/* $.mobile.changePage("#services");
 					$('#servicesList').empty();
 					for(i = 0; i < result.value.length ; i++){
 						$('#servicesList').append('<li data-theme="c"><a class="service" data-href="'+result.value[i].href+'" data-transition="slide">'+result.value[i].title+'</a></li>');
 					}
-					$('#servicesList').listview('refresh');
+					$('#servicesList').listview('refresh'); */
 				},
 				error: function (request,error) {
 					console.log(request.responseText);
@@ -170,6 +65,35 @@ $(document).ready(function(){
 			toastr.error('All fields are required.');
 		}
     });
+	
+	$('a.homePageObject').livequery("click",function(){
+		$.ajax({
+			url: $(this).attr('data-href'),
+			beforeSend: function(xhr) {
+				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Accept", "application/json");
+				$.mobile.showPageLoadingMsg(true);
+			},
+			complete: function() {
+				$.mobile.hidePageLoadingMsg();
+			},
+			success: function (result) {
+				var collections = result.members;
+				console.log(collections);
+				$.mobile.changePage("#service");
+				$('#collectionsList').empty();
+				for(var collection in collections){
+					$('#collectionsList').append('<li data-theme="c"><a class="collection" data-id="'+collections[collection].id+'" data-href="'+collections[collection].links[0].href+'" data-transition="slide">'+collection+'</a></li>');
+				}
+				$('#collectionsList').listview('refresh');
+			},
+			error: function (request,error) {
+				console.log(request.responseText);
+				toastr.error("Couldn't fetch collections");
+			}
+		});
+    });
+	
 	$('.service').livequery("click",function(){
 		$.ajax({
 			url: $(this).attr('data-href'),
@@ -204,7 +128,7 @@ $(document).ready(function(){
 			$.mobile.changePage("#newObject");
 			$("#createObject").attr('data-href',$(this).attr('data-href')+"/invoke");
 		} else if(collection_id.indexOf("similarTo") != -1){
-		
+			
 		} else{
 			$.ajax({
 				url: $(this).attr('data-href')+"/invoke",
@@ -427,10 +351,40 @@ $(document).ready(function(){
 						} else if(params.length == 1){
 							if(id === "add"){
 								$('#addDependency').load('../Content/partials/addDependency.html', function(){
+									$.ajax({
+										url: isisURL+"services/toDoItems/actions/allToDos/invoke",
+										beforeSend: function(xhr) {
+											//xhr.setRequestHeader("Authorization", header);
+											xhr.setRequestHeader("Accept", "application/json");
+											$.mobile.showPageLoadingMsg(true);
+										},
+										complete: function() {
+											$.mobile.hidePageLoadingMsg();
+										},
+										success: function (data) {
+											var objects = data.result.value;
+											console.log(objects);
+											for(i = 0; i < objects.length; i++){
+												if(invoke_url.indexOf(objects[i].href) == -1){
+													$("#addDependency #addDependencyMenu").append($('<option />',{'value': objects[i].href}).text(objects[i].title));
+												} else {
+													$("#addDependency #addDependencyMenu").append($('<option />',{'value': objects[i].href, 'disabled': 'disabled'}).text(objects[i].title));
+												}
+											}
+											$("#addDependency #addDependencyMenu").selectmenu();
+											$("#addDependency #addDependencyMenu").selectmenu( "refresh", true );
+											$("a.addDependency").attr("data-href", invoke_url);
+											$.mobile.changePage("#addDependency");
+										},
+										error: function (request,error) {
+											console.log(request.responseText);
+											toastr.error("Couldn't invoke action");
+										}
+									});
 									$(this).trigger("pagecreate");
 								});
-								$.ajax({
-									url: isisURL+"restful/services/toDoItems/actions/allToDos/invoke",
+								/* $.ajax({
+									url: isisURL+"services/toDoItems/actions/allToDos/invoke",
 									beforeSend: function(xhr) {
 										//xhr.setRequestHeader("Authorization", header);
 										xhr.setRequestHeader("Accept", "application/json");
@@ -458,7 +412,7 @@ $(document).ready(function(){
 										console.log(request.responseText);
 										toastr.error("Couldn't invoke action");
 									}
-								});
+								}); */
 							} else if(id === "remove"){
 								$('#removeDependency').load('../Content/partials/removeDependency.html', function(){
 									var objects = params[0].choices;

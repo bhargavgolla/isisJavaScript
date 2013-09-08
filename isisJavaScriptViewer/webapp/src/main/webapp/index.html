@@ -19,6 +19,7 @@
   <script type="text/javascript" src="scripts/toastr.js"></script>
   <script src="scripts/jQuery.base64.js"></script>
   <script src="scripts/jQuery.livequery.js"></script>
+  <script src="scripts/utils.js"></script>
   <script src="scripts/main.js"></script>
    
 </head>
@@ -35,7 +36,7 @@
             <label for="url">
                 URL
             </label>
-            <!-- My Localbox --><input name="url" id="url" placeholder="" value="http://localhost:8080/" type="url">
+            <!-- My Localbox --><input name="url" id="url" placeholder="" value="http://localhost:8080/restful/" type="url">
 			<!-- .NET implementation <input name="url" id="url" placeholder="" value="http://localhost:9292/" type="url"> -->
         </div>
         <div data-role="fieldcontain">
@@ -55,6 +56,9 @@
         </a>
     </div>
 </div>
+<!-- Home Page -->
+<div data-role="page" id="homePage"></div>
+
 <!-- Services -->
 <div data-role="page" id="services">
     <div data-theme="a" data-role="header">
