@@ -130,7 +130,7 @@ $(document).ready(function(){
 		});
     });
 	
-	$('.service').livequery("click",function(){
+	$('a.service').livequery("click",function(){
 		$.ajax({
 			url: $(this).attr('data-href'),
 			beforeSend: function(xhr) {
@@ -144,12 +144,16 @@ $(document).ready(function(){
 			success: function (result) {
 				var collections = result.members;
 				console.log(collections);
+				$('#service').load('../Content/partials/service.html', function(){
+					var collectionsList = '#service #collectionsList';
+					$(collectionsList).empty();
+					for(var collection in collections){
+						$(collectionsList).append('<li data-theme="c"><a class="collection" data-id="'+collections[collection].id+'" data-href="'+collections[collection].links[0].href+'" data-transition="slide">'+collection+'</a></li>');
+					}
+					$(collectionsList).listview().listview('refresh');
+					$(this).trigger("pagecreate");
+				});
 				$.mobile.changePage("#service");
-				$('#collectionsList').empty();
-				for(var collection in collections){
-					$('#collectionsList').append('<li data-theme="c"><a class="collection" data-id="'+collections[collection].id+'" data-href="'+collections[collection].links[0].href+'" data-transition="slide">'+collection+'</a></li>');
-				}
-				$('#collectionsList').listview('refresh');
 			},
 			error: function (request,error) {
 				console.log(request.responseText);
