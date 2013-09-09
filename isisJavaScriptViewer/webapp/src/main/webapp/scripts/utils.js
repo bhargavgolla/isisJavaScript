@@ -51,7 +51,7 @@ var updateObjectPage = function(objectDetails, put_url){
 			}
 		} else if(objectDetails[detail].memberType == "collection"){
 			if(objectDetails[detail].disabledReason == null){
-							$('#objectCollectionsList').append('<li data-theme="c"><a class="objectCollection" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="0">'+detail+'</a></li>');
+				$('#objectCollectionsList').append('<li data-theme="c"><a class="objectCollection" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="0">'+detail+'</a></li>');
 			} else {
 				$('#objectCollectionsList').append('<li data-theme="c"><a class="objectCollection" data-href="'+objectDetails[detail].links[0].href+'" data-transition="slide" data-disabled="'+objectDetails[detail].disabledReason+'">'+detail+'</a></li>');
 			}
@@ -74,4 +74,60 @@ var updateObjectPage = function(objectDetails, put_url){
 		$('#objectActionsList').trigger('create');
 	}
 	$('#editObject').attr('data-href',put_url);
+}
+
+var getString = function(string){
+	if(typeof string != 'undefined') {
+		return string;
+	}
+	return '';
+}
+
+var htmlForParameters = function (parameters, invoke_url, invoke_method){
+	var htmlContent = '<form action="" method="POST">';
+	for(i = 0; i < parameters.length; i++){
+		//Select menu
+		if (typeof parameters[i].choices != 'undefined') {
+			htmlContent += '<div data-role="fieldcontain"><label for="'+parameters[i].id+'">'+parameters[i].name+'</label>';
+			htmlContent += '<select name="'+parameters[i].id+'" id="'+parameters[i].id+'" >';
+			for (var j = 0; j < parameters[i].choices.length; j++) {
+				if(parameters[i].choices[j] == parameters[i].default){
+					htmlContent += '<option value="'+parameters[i].choices[j]+'" selected>'+parameters[i].choices[j]+'</option>';
+				} else {
+					htmlContent += '<option value="'+parameters[i].choices[j]+'">'+parameters[i].choices[j]+'</option>';
+				}
+			}
+			htmlContent += '</select></div>';
+		} else if (parameters[i].id.indexOf("due") != -1) {
+			htmlContent += '<div data-role="fieldcontain"><label for="'+parameters[i].id+'">'+parameters[i].name+'</label><input name="'+parameters[i].id+'" id="'+parameters[i].id+'" placeholder="" value="'+getDateString(parameters[i].default)+'" type="date"></div>';
+		} else if (parameters[i].id.indexOf("cost") != -1) {
+			htmlContent += '<div data-role="fieldcontain"><label for="'+parameters[i].id+'">'+parameters[i].name+'</label><input name="'+parameters[i].id+'" id="'+parameters[i].id+'" placeholder="" value="'+parameters[i].default+'" type="number"></div>';
+		} else {
+			htmlContent += '<div data-role="fieldcontain"><label for="'+parameters[i].id+'">'+parameters[i].name+'</label><input name="'+parameters[i].id+'" id="'+parameters[i].id+'" placeholder="" value="'+getString(parameters[i].default)+'" type="text"></div>';
+		}
+	}
+	htmlContent += '</form><a data-role="button" data-href="'+invoke_url+'" data-method="'+invoke_method+'" class="parameterSubmit">Submit</a>';
+	return htmlContent;
+}
+
+var handleResult = function(data){
+	var resultType = data.resulttype;
+	var objects = data.result.value;
+	if(resultType == "list"){
+		window.history.back();
+		toastr.success("Action performed successfully");
+		/* $.mobile.changePage("#objects");
+		$('#objects #objectsList').empty();
+		console.log(objects);
+		for(i = 0; i < objects.length; i++){
+			$('#objects #objectsList').append('<li data-theme="c"><a class="object" data-href="'+objects[i].href+'" data-transition="slide">'+objects[i].title+'</a></li>');
+		}
+		$('#objects #objectsList').listview('refresh'); */
+	} else if(resultType == "domainobject"){
+		window.history.back();
+		toastr.success("Action performed successfully");
+	}  else if(resultType == "scalarvalue"){
+		toastr.success(objects);
+		window.history.back();
+	}
 }

@@ -49,12 +49,6 @@ $(document).ready(function(){
 							$(this).trigger("pagecreate");
 					});
 					$.mobile.changePage("#home");
-					/* $.mobile.changePage("#services");
-					$('#servicesList').empty();
-					for(i = 0; i < result.value.length ; i++){
-						$('#servicesList').append('<li data-theme="c"><a class="service" data-href="'+result.value[i].href+'" data-transition="slide">'+result.value[i].title+'</a></li>');
-					}
-					$('#servicesList').listview('refresh'); */
 				},
 				error: function (request,error) {
 					console.log(request.responseText);
@@ -148,7 +142,7 @@ $(document).ready(function(){
 					var collectionsList = '#service #collectionsList';
 					$(collectionsList).empty();
 					for(var collection in collections){
-						$(collectionsList).append('<li data-theme="c"><a class="collection" data-id="'+collections[collection].id+'" data-href="'+collections[collection].links[0].href+'" data-transition="slide">'+collection+'</a></li>');
+						$(collectionsList).append('<li data-theme="c"><a class="collection" data-href="'+collections[collection].links[0].href+'" data-transition="slide">'+collection+'</a></li>');
 					}
 					$(collectionsList).listview().listview('refresh');
 					$(this).trigger("pagecreate");
@@ -162,41 +156,131 @@ $(document).ready(function(){
 		});
     });
 	
-	$('.collection').livequery("click",function(){
-		var collection_id = $(this).attr('data-id');
-		if(collection_id.indexOf("new") != -1){
-			$.mobile.changePage("#newObject");
-			$("#createObject").attr('data-href',$(this).attr('data-href')+"/invoke");
-		} else if(collection_id.indexOf("similarTo") != -1){
-			
-		} else{
-			$.ajax({
-				url: $(this).attr('data-href')+"/invoke",
-				beforeSend: function(xhr) {
-					//xhr.setRequestHeader("Authorization", header);
-					xhr.setRequestHeader("Accept", "application/json");
-					$.mobile.showPageLoadingMsg(true);
-				},
-				complete: function() {
-					$.mobile.hidePageLoadingMsg();
-				},
-				success: function (data) {
-					var objects = data.result.value;
-					console.log(objects);
-					$.mobile.changePage("#objects");
-					$('#objectsList').empty();
-					for(i = 0; i < objects.length; i++){
-						$('#objectsList').append('<li data-theme="c"><a class="object" data-href="'+objects[i].href+'" data-transition="slide">'+objects[i].title+'</a></li>');
+	$('a.collection').livequery("click",function(){
+		var collection_url = $(this).attr('data-href');
+		$.ajax({
+			url: collection_url,
+			beforeSend: function(xhr) {
+				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Accept", "application/json");
+				$.mobile.showPageLoadingMsg(true);
+			},
+			complete: function() {
+				$.mobile.hidePageLoadingMsg();
+			},
+			success: function (data) {
+				var links = data.links;
+				console.log(links);
+				var invoke_url = links[2].href;
+				var invoke_method = links[2].method;
+				var parameters = data.parameters;
+				if(invoke_method == "GET"){
+					if(parameters.length == 0){
+						$.ajax({
+							type: invoke_method,
+							url: invoke_url,
+							beforeSend: function(xhr) {
+								//xhr.setRequestHeader("Authorization", header);
+								xhr.setRequestHeader("Accept", "application/json");
+								$.mobile.showPageLoadingMsg(true);
+							},
+							complete: function() {
+								$.mobile.hidePageLoadingMsg();
+							},
+							success: function (data) {
+								var resultType = data.resulttype;
+								var objects = data.result.value;
+								console.log(objects);
+								if(resultType == "list"){
+									$('#objects').load('../Content/partials/objects.html', function(){
+										var objectsList = '#objects #objectsList';
+										$(objectsList).empty();
+										for(i = 0; i < objects.length; i++){
+											$(objectsList).append('<li data-theme="c"><a class="object" data-href="'+objects[i].href+'" data-transition="slide">'+objects[i].title+'</a></li>');
+										}
+										$(objectsList).listview().listview('refresh');
+										$(this).trigger("pagecreate");
+									});
+									$.mobile.changePage("#objects");
+								} else if(resultType == "scalarvalue") {
+									toastr.success(objects);
+								}
+							},
+							error: function (request,error) {
+								console.log(request.responseText);
+								toastr.error("Couldn't invoke action");
+							}
+						});
 					}
-					$('#objectsList').listview('refresh');
-				},
-				error: function (request,error) {
-					console.log(request.responseText);
-					toastr.error("Couldn't fetch objects");
+				} else if(invoke_method == "POST"){
+					var id = data.id;
+					if(parameters.length <= 0){
+						$.ajax({
+							type: invoke_method,
+							url: invoke_url,
+							beforeSend: function(xhr) {
+								//xhr.setRequestHeader("Authorization", header);
+								xhr.setRequestHeader("Accept", "application/json");
+								$.mobile.showPageLoadingMsg(true);
+							},
+							complete: function() {
+								$.mobile.hidePageLoadingMsg();
+							},
+							success: function (data) {
+								handleResult(data);
+							},
+							error: function (request,error) {
+								console.log(request.responseText);
+								toastr.error("Couldn't invoke action");
+							}
+						});
+					} else {
+						$('#parameters').load('../Content/partials/parameters.html', function(){
+							var parameterContent = '#parameters div.content';
+							$(parameterContent).empty();
+							console.log(parameters);
+							$(parameterContent).append(htmlForParameters(parameters,invoke_url,invoke_method));
+							$(this).trigger("pagecreate");
+						});
+						$.mobile.changePage("#parameters");
+					}
 				}
-			});
-		}
+			},
+			error: function (request,error) {
+				console.log(request.responseText);
+				toastr.error("Couldn't invoke action");
+			}
+		});
     });
+	
+	$('a.parameterSubmit').livequery("click",function(){
+		var newDetails = JSON.stringify($(this).parent().children('form').serializeObject());
+		console.log(newDetails);
+		var updateUrl = $(this).attr('data-href');
+		var invokeMethod = $(this).attr('data-method');
+		var toastMsg = "Action completed successfully";
+		$.ajax({
+			type: invokeMethod,
+			url: updateUrl,
+			data: newDetails,
+			beforeSend: function(xhr) {
+				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Accept", "application/json");
+				$.mobile.showPageLoadingMsg(true);
+			},
+			complete: function() {
+				$.mobile.hidePageLoadingMsg();
+			},
+			success: function (data) {
+				//toastr.success(toastMsg);
+				handleResult(data);
+			},
+			error: function (request,error) {
+				console.log(request.responseText);
+				toastr.error("Action couldn't be completed");
+			}
+		});
+	});
 	
 	$('.object').livequery("click",function(){
 		$.ajax({
