@@ -111,6 +111,15 @@ $(document).ready(function(){
 					});
 					$.mobile.changePage("#version");
 				} else if (resource_url.indexOf("services") != -1){
+					$('#services').load('../Content/partials/services.html', function(){
+						var servicesList = '#services #servicesList';
+						$(servicesList).empty();
+						for(i = 0; i < result.value.length ; i++){
+							$(servicesList).append('<li data-theme="c"><a class="service" data-href="'+result.value[i].href+'" data-transition="slide">'+result.value[i].title+'</a></li>');
+						}
+						$(servicesList).listview().listview('refresh');
+						$(this).trigger("pagecreate");
+					});
 					$.mobile.changePage("#services");
 				}
 			},
