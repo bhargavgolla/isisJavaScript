@@ -82,19 +82,33 @@ $(document).ready(function(){
 				console.log(result);
 				if (resource_url.indexOf("user") != -1){
 					$('#user').load('../Content/partials/user.html', function(){
-							if ( result.userName != null){
-								$('#userNameText').html(result.userName);
-							} else if ( result.friendlyName != null){
-								$('#friendlyNameText').html(result.friendlyName);
-							} else if ( result.email != null){
-								$('#emailText').html(result.email);
-							} else if ( result.roles.length != 0){
-								$('#rolesText').html(result.roles);
+						for (var userObject in result){
+							if ( userObject.indexOf("userName") != -1){
+								$('#userNameText').html(result[userObject]);
+							} else if ( userObject.indexOf("friendlyName") != -1){
+								$('#friendlyNameText').html(result[userObject]);
+							} else if ( userObject.indexOf("email") != -1){
+								$('#emailText').html(result[userObject]);
+							} else if ( userObject.indexOf("roles") != -1){
+								if (result[userObject].length > 0) {
+									$('#rolesText').html(result[userObject]);
+								}
 							}
-							$(this).trigger("pagecreate");
+						}
+						$(this).trigger("pagecreate");
 					});
 					$.mobile.changePage("#user");
 				} else if (resource_url.indexOf("version") != -1){
+					$('#version').load('../Content/partials/version.html', function(){
+						for (var userObject in result) {
+							if ( userObject.indexOf("specVersion") != -1){
+								$('#specVersionText').html(result[userObject]);
+							} else if ( userObject.indexOf("implVersion") != -1){
+								$('#implVersionText').html(result[userObject]);
+							}
+						}
+						$(this).trigger("pagecreate");
+					});
 					$.mobile.changePage("#version");
 				} else if (resource_url.indexOf("services") != -1){
 					$.mobile.changePage("#services");
