@@ -283,7 +283,7 @@ $(document).ready(function(){ //For Normal usage
 		});
 	});
 	
-	$('.object').livequery("click",function(){
+	$('a.object').livequery("click",function(){
 		$.ajax({
 			url: $(this).attr('data-href'),
 			beforeSend: function(xhr) {
@@ -298,8 +298,11 @@ $(document).ready(function(){ //For Normal usage
 				var objectDetails = data.members;
 				var put_url = data.links[2].href;
 				console.log(objectDetails);
+				$("#object").load('../Content/partials/object.html', function(){
+					updateObjectPage(objectDetails, put_url);
+					$(this).trigger("pagecreate");
+				});
 				$.mobile.changePage("#object");
-				updateObjectPage(objectDetails, put_url);
 			},
 			error: function (request,error) {
 				console.log(request.responseText);
@@ -308,7 +311,7 @@ $(document).ready(function(){ //For Normal usage
 		});
     });
 	
-	$('.objectCollection').livequery("click",function(){
+	$('a.objectCollection').livequery("click",function(){
 		var disabled = $(this).attr('data-disabled');
 		if(disabled != 0){
 			toastr.info(disabled);
@@ -344,7 +347,7 @@ $(document).ready(function(){ //For Normal usage
 		}
     });
 	
-	$('.objectAction').livequery("click",function(){
+	$('a.objectAction').livequery("click",function(){
 		var disabled = $(this).attr('data-disabled');
 		if(disabled != 0){
 			toastr.warning(disabled);
@@ -362,12 +365,6 @@ $(document).ready(function(){ //For Normal usage
 				success: function (data) {
 					var links = data.links;
 					console.log(links);
-					/*for(i = 0; i < links.length; i++){
-						if(links[i].indexOf("invoke") != -1){
-							break;
-						}
-					}
-					var invoke_url = links[i].href;*/
 					var invoke_url = links[2].href;
 					var invoke_method = links[2].method;
 					if(invoke_method == "GET"){
@@ -386,19 +383,19 @@ $(document).ready(function(){ //For Normal usage
 								var resultType = data.resulttype;
 								var objects = data.result.value;
 								if(resultType == "list"){
-									/*$('#similarToObjects').load('../Content/partials/similarObjects.html', function(){
+									$('#similarToObjects').load('../Content/partials/similarObjects.html', function(){
+										$('#similarToObjects #objectsSimilarList').empty();
+										console.log(objects);
+										for(i = 0; i < objects.length; i++){
+											console.log("Children length: "+$('#similarToObjects #objectsSimilarList').children().length);
+											$('#similarToObjects #objectsSimilarList').append('<li data-theme="c"><a class="object" data-href="'+objects[i].href+'" data-transition="slide">'+objects[i].title+'</a></li>');
+											console.log("Children length: "+$('#similarToObjects #objectsSimilarList').children().length);
+										}
+										console.log("Children length: "+$('#similarToObjects #objectsSimilarList').children().length);
+										$('#similarToObjects #objectsSimilarList').listview().listview('refresh');
 										$(this).trigger("pagecreate");
-									});*/
+									});
 									$.mobile.changePage("#similarToObjects");
-									$('#similarToObjects #objectsSimilarList').empty();
-									console.log(objects);
-									for(i = 0; i < objects.length; i++){
-										console.log("Children length: "+$('#similarToObjects #objectsSimilarList').children().length);
-										$('#similarToObjects #objectsSimilarList').append('<li data-theme="c"><a class="object" data-href="'+objects[i].href+'" data-transition="slide">'+objects[i].title+'</a></li>');
-										console.log("Children length: "+$('#similarToObjects #objectsSimilarList').children().length);
-									}
-									console.log("Children length: "+$('#similarToObjects #objectsSimilarList').children().length);
-									$('#similarToObjects #objectsSimilarList').listview('refresh');
 								}
 							},
 							error: function (request,error) {
@@ -443,36 +440,14 @@ $(document).ready(function(){ //For Normal usage
 								}
 							});
 						} else if(params.length == 4){
-							$( "#duplicateObject .duplicateDetails form div" ).each(function( index ){
-								if(index < params.length){
-									$(this).empty();
-									$(this).append('<label for="'+params[index].id+'">'+params[index].name+'</label>');
-									if(typeof params[index].choices != 'undefined'){
-										console.log("In choices "+params[index].choices);
-										$(this).append('<select name="'+params[index].id+'" id="'+params[index].id+'" ></select>');
-										for (var i = 0; i < params[index].choices.length; i++) {
-											if(params[index].choices[i] == params[index]["default"]){
-												$(this).children("select").append($('<option />',{'value': params[index].choices[i], 'selected': 'selected'}).text(params[index].choices[i]));
-											} else {
-												$(this).children("select").append($('<option />',{'value': params[index].choices[i]}).text(params[index].choices[i]));
-											}
-										}
-										$(this).children("select").selectmenu();
-										$(this).children("select").selectmenu( "refresh", true );
-									} else {
-										if(params[index].id.indexOf("due") != -1){
-											console.log("Date: "+params[index]["default"].length);
-											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+getDateString(params[index]["default"])+'" type="date">');
-										} else if(params[index].id.indexOf("cost") != -1){
-											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+params[index]["default"]+'" type="number">');
-										} else{
-											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+params[index]["default"]+'" >');
-										}
-									}
-								}
+							$('#parameters').load('../Content/partials/parameters.html', function(){
+								var parameterContent = '#parameters div.content';
+								$(parameterContent).empty();
+								console.log(params);
+								$(parameterContent).append(htmlForParameters(params,invoke_url,invoke_method));
+								$(this).trigger("pagecreate");
 							});
-							$('#duplicateObject .duplicateDetails .createObject').attr('data-href',invoke_url);
-							$.mobile.changePage("#duplicateObject");
+							$.mobile.changePage("#parameters");
 						} else if(params.length == 1){
 							if(id === "add"){
 								$('#addDependency').load('../Content/partials/addDependency.html', function(){
@@ -508,36 +483,6 @@ $(document).ready(function(){ //For Normal usage
 									});
 									$(this).trigger("pagecreate");
 								});
-								/* $.ajax({
-									url: isisURL+"services/toDoItems/actions/allToDos/invoke",
-									beforeSend: function(xhr) {
-										//xhr.setRequestHeader("Authorization", header);
-										xhr.setRequestHeader("Accept", "application/json");
-										$.mobile.showPageLoadingMsg(true);
-									},
-									complete: function() {
-										$.mobile.hidePageLoadingMsg();
-									},
-									success: function (data) {
-										var objects = data.result.value;
-										console.log(objects);
-										for(i = 0; i < objects.length; i++){
-											if(invoke_url.indexOf(objects[i].href) == -1){
-												$("#addDependency #addDependencyMenu").append($('<option />',{'value': objects[i].href}).text(objects[i].title));
-											} else {
-												$("#addDependency #addDependencyMenu").append($('<option />',{'value': objects[i].href, 'disabled': 'disabled'}).text(objects[i].title));
-											}
-										}
-										$("#addDependency #addDependencyMenu").selectmenu();
-										$("#addDependency #addDependencyMenu").selectmenu( "refresh", true );
-										$("a.addDependency").attr("data-href", invoke_url);
-										$.mobile.changePage("#addDependency");
-									},
-									error: function (request,error) {
-										console.log(request.responseText);
-										toastr.error("Couldn't invoke action");
-									}
-								}); */
 							} else if(id === "remove"){
 								$('#removeDependency').load('../Content/partials/removeDependency.html', function(){
 									var objects = params[0].choices;
@@ -552,33 +497,15 @@ $(document).ready(function(){ //For Normal usage
 									$("a.removeDependency").attr("data-href", invoke_url);
 									$(this).trigger("pagecreate");
 								});
-								/*var objects = params[0].choices;
-								console.log(objects);
-								$.mobile.changePage("#removeDependency");
-								for(i = 0; i < objects.length; i++){
-									console.log("In loop"+objects);
-									$("#removeDependency #removeDependencyMenu").append($('<option />',{'value': objects[i].href}).text(objects[i].title));
-								}
-								$("#removeDependency #removeDependencyMenu").selectmenu();
-								$("#removeDependency #removeDependencyMenu").selectmenu( "refresh", true );
-								$("a.removeDependency").attr("data-href", invoke_url);*/
-								//$.mobile.changePage("#removeDependency");
 							} else {
-								$( "#updateObject .updateDetails form div" ).each(function( index ){
-									if(index < params.length){
-										$(this).empty();
-										$(this).append('<label for="'+params[index].id+'">'+params[index].name+'</label>');
-										if(params[index].id.indexOf("Date") != -1){
-											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="" type="date">');
-										} else if(params[index].id.indexOf("Cost") != -1){
-											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="" type="number">');
-										} else{
-											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+params[index]["default"]+'" >');
-										}
-									}
+								$('#parameters').load('../Content/partials/parameters.html', function(){
+									var parameterContent = '#parameters div.content';
+									$(parameterContent).empty();
+									console.log(params);
+									$(parameterContent).append(htmlForParameters(params,invoke_url,invoke_method));
+									$(this).trigger("pagecreate");
 								});
-								$('#updateObject .updateDetails .updateObject').attr('data-href',invoke_url);
-								$.mobile.changePage("#updateObject");
+								$.mobile.changePage("#parameters");
 							}
 						}
 					}
@@ -684,13 +611,13 @@ $(document).ready(function(){ //For Normal usage
 		});
 	});
 	
-	$('#editObject').click(function(){
-		var newDetails = JSON.stringify($('.objectDetails form').serializeObject());
+	$('#editObject').livequery('click',function(){
+		var newDetails = JSON.stringify($(this).parent().children('form').serializeObject());
 		console.log(newDetails);
-		var version = parseInt($('#versionSequence').val()) + 1;
+		var put_url = $(this).attr('data-href');
 		$.ajax({
 			type: "PUT",
-			url: $(this).attr('data-href'),
+			url: put_url,
 			data: newDetails,
 			beforeSend: function(xhr) {
 				//xhr.setRequestHeader("Authorization", header);
@@ -701,7 +628,7 @@ $(document).ready(function(){ //For Normal usage
 				$.mobile.hidePageLoadingMsg();
 			},
 			success: function (data) {
-				$('#versionSequence').val(version);
+				updateObjectPage(data.members, put_url);
 				toastr.success('Object updated successfully');
 			},
 			error: function (request,error) {

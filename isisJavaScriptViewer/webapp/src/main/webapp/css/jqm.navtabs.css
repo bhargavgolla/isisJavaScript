@@ -1,0 +1,7 @@
+/* jqm.navtab styles */
+.tab-content {
+    display:none;
+}
+.tab-content:first-child {
+    display:block;
+}

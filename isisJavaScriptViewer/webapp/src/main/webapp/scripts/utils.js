@@ -39,10 +39,10 @@ var updateObjectPage = function(objectDetails, put_url){
 				if(typeof objectDetails[detail].value == 'boolean'){
 					if(objectDetails[detail].value){
 						$("#"+detail).val('on');
-						$("#"+detail).slider('refresh');
+						$("#"+detail).slider().slider('refresh');
 					} else {
 						$("#"+detail).val('off');
-						$("#"+detail).slider('refresh');
+						$("#"+detail).slider().slider('refresh');
 					}
 				} else {
 					$("#"+detail).val(objectDetails[detail].value);
@@ -98,10 +98,12 @@ var htmlForParameters = function (parameters, invoke_url, invoke_method){
 				}
 			}
 			htmlContent += '</select></div>';
-		} else if (parameters[i].id.indexOf("due") != -1) {
+		} else if (parameters[i].id.toLowerCase().indexOf("due") != -1) {
 			htmlContent += '<div data-role="fieldcontain"><label for="'+parameters[i].id+'">'+parameters[i].name+'</label><input name="'+parameters[i].id+'" id="'+parameters[i].id+'" placeholder="" value="'+getDateString(parameters[i]["default"])+'" type="date"></div>';
-		} else if (parameters[i].id.indexOf("cost") != -1) {
+		} else if (parameters[i].id.toLowerCase().indexOf("cost") != -1) {
 			htmlContent += '<div data-role="fieldcontain"><label for="'+parameters[i].id+'">'+parameters[i].name+'</label><input name="'+parameters[i].id+'" id="'+parameters[i].id+'" placeholder="" value="'+parameters[i]["default"]+'" type="number"></div>';
+		} else if (  parameters[i].id.toLowerCase().indexOf("date") != -1) {
+			htmlContent += '<div data-role="fieldcontain"><label for="'+parameters[i].id+'">'+parameters[i].name+'</label><input name="'+parameters[i].id+'" id="'+parameters[i].id+'" placeholder="" value="" type="date"></div>';
 		} else {
 			htmlContent += '<div data-role="fieldcontain"><label for="'+parameters[i].id+'">'+parameters[i].name+'</label><input name="'+parameters[i].id+'" id="'+parameters[i].id+'" placeholder="" value="'+getString(parameters[i]["default"])+'" type="text"></div>';
 		}
