@@ -91,7 +91,7 @@ var htmlForParameters = function (parameters, invoke_url, invoke_method){
 			htmlContent += '<div data-role="fieldcontain"><label for="'+parameters[i].id+'">'+parameters[i].name+'</label>';
 			htmlContent += '<select name="'+parameters[i].id+'" id="'+parameters[i].id+'" >';
 			for (var j = 0; j < parameters[i].choices.length; j++) {
-				if(parameters[i].choices[j] == parameters[i].default){
+				if(parameters[i].choices[j] == parameters[i]["default"]){
 					htmlContent += '<option value="'+parameters[i].choices[j]+'" selected>'+parameters[i].choices[j]+'</option>';
 				} else {
 					htmlContent += '<option value="'+parameters[i].choices[j]+'">'+parameters[i].choices[j]+'</option>';
@@ -99,11 +99,11 @@ var htmlForParameters = function (parameters, invoke_url, invoke_method){
 			}
 			htmlContent += '</select></div>';
 		} else if (parameters[i].id.indexOf("due") != -1) {
-			htmlContent += '<div data-role="fieldcontain"><label for="'+parameters[i].id+'">'+parameters[i].name+'</label><input name="'+parameters[i].id+'" id="'+parameters[i].id+'" placeholder="" value="'+getDateString(parameters[i].default)+'" type="date"></div>';
+			htmlContent += '<div data-role="fieldcontain"><label for="'+parameters[i].id+'">'+parameters[i].name+'</label><input name="'+parameters[i].id+'" id="'+parameters[i].id+'" placeholder="" value="'+getDateString(parameters[i]["default"])+'" type="date"></div>';
 		} else if (parameters[i].id.indexOf("cost") != -1) {
-			htmlContent += '<div data-role="fieldcontain"><label for="'+parameters[i].id+'">'+parameters[i].name+'</label><input name="'+parameters[i].id+'" id="'+parameters[i].id+'" placeholder="" value="'+parameters[i].default+'" type="number"></div>';
+			htmlContent += '<div data-role="fieldcontain"><label for="'+parameters[i].id+'">'+parameters[i].name+'</label><input name="'+parameters[i].id+'" id="'+parameters[i].id+'" placeholder="" value="'+parameters[i]["default"]+'" type="number"></div>';
 		} else {
-			htmlContent += '<div data-role="fieldcontain"><label for="'+parameters[i].id+'">'+parameters[i].name+'</label><input name="'+parameters[i].id+'" id="'+parameters[i].id+'" placeholder="" value="'+getString(parameters[i].default)+'" type="text"></div>';
+			htmlContent += '<div data-role="fieldcontain"><label for="'+parameters[i].id+'">'+parameters[i].name+'</label><input name="'+parameters[i].id+'" id="'+parameters[i].id+'" placeholder="" value="'+getString(parameters[i]["default"])+'" type="text"></div>';
 		}
 	}
 	htmlContent += '</form><a data-role="button" data-href="'+invoke_url+'" data-method="'+invoke_method+'" class="parameterSubmit">Submit</a>';

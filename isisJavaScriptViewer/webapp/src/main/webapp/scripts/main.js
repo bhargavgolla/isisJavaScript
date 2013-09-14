@@ -1,6 +1,7 @@
 var isisURL, username, password, header;
 
-$(document).ready(function(){
+$(document).ready(function(){ //For Normal usage
+//document.addEventListener("deviceready", function(){ //For Phonegap
 	toastr.options = {
 		"debug": false,
 		"positionClass": "toast-bottom-full-width",
@@ -450,7 +451,7 @@ $(document).ready(function(){
 										console.log("In choices "+params[index].choices);
 										$(this).append('<select name="'+params[index].id+'" id="'+params[index].id+'" ></select>');
 										for (var i = 0; i < params[index].choices.length; i++) {
-											if(params[index].choices[i] == params[index].default){
+											if(params[index].choices[i] == params[index]["default"]){
 												$(this).children("select").append($('<option />',{'value': params[index].choices[i], 'selected': 'selected'}).text(params[index].choices[i]));
 											} else {
 												$(this).children("select").append($('<option />',{'value': params[index].choices[i]}).text(params[index].choices[i]));
@@ -460,12 +461,12 @@ $(document).ready(function(){
 										$(this).children("select").selectmenu( "refresh", true );
 									} else {
 										if(params[index].id.indexOf("due") != -1){
-											console.log("Date: "+params[index].default[0].length);
-											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+getDateString(params[index].default)+'" type="date">');
+											console.log("Date: "+params[index]["default"].length);
+											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+getDateString(params[index]["default"])+'" type="date">');
 										} else if(params[index].id.indexOf("cost") != -1){
-											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+params[index].default+'" type="number">');
+											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+params[index]["default"]+'" type="number">');
 										} else{
-											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+params[index].default+'" >');
+											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+params[index]["default"]+'" >');
 										}
 									}
 								}
@@ -572,7 +573,7 @@ $(document).ready(function(){
 										} else if(params[index].id.indexOf("Cost") != -1){
 											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="" type="number">');
 										} else{
-											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+params[index].default+'" >');
+											$(this).append('<input name="'+params[index].id+'" id="'+params[index].id+'" placeholder="" value="'+params[index]["default"]+'" >');
 										}
 									}
 								});
