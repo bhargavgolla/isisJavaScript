@@ -23,7 +23,7 @@ $(document).ready(function(){ //For Normal usage
 			$.ajax({
 				url: isisURL, //Localbox
 				beforeSend: function(xhr) {
-					//xhr.setRequestHeader("Authorization", header);
+					xhr.setRequestHeader("Authorization", header);
 					xhr.setRequestHeader("Accept", "application/json");
 					$.mobile.showPageLoadingMsg(true);
 				},
@@ -66,7 +66,7 @@ $(document).ready(function(){ //For Normal usage
 		$.ajax({
 			url: resource_url,
 			beforeSend: function(xhr) {
-				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Authorization", header);
 				xhr.setRequestHeader("Accept", "application/json");
 				$.mobile.showPageLoadingMsg(true);
 			},
@@ -129,7 +129,7 @@ $(document).ready(function(){ //For Normal usage
 		$.ajax({
 			url: $(this).attr('data-href'),
 			beforeSend: function(xhr) {
-				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Authorization", header);
 				xhr.setRequestHeader("Accept", "application/json");
 				$.mobile.showPageLoadingMsg(true);
 			},
@@ -162,7 +162,7 @@ $(document).ready(function(){ //For Normal usage
 		$.ajax({
 			url: collection_url,
 			beforeSend: function(xhr) {
-				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Authorization", header);
 				xhr.setRequestHeader("Accept", "application/json");
 				$.mobile.showPageLoadingMsg(true);
 			},
@@ -181,7 +181,7 @@ $(document).ready(function(){ //For Normal usage
 							type: invoke_method,
 							url: invoke_url,
 							beforeSend: function(xhr) {
-								//xhr.setRequestHeader("Authorization", header);
+								xhr.setRequestHeader("Authorization", header);
 								xhr.setRequestHeader("Accept", "application/json");
 								$.mobile.showPageLoadingMsg(true);
 							},
@@ -220,7 +220,7 @@ $(document).ready(function(){ //For Normal usage
 							type: invoke_method,
 							url: invoke_url,
 							beforeSend: function(xhr) {
-								//xhr.setRequestHeader("Authorization", header);
+								xhr.setRequestHeader("Authorization", header);
 								xhr.setRequestHeader("Accept", "application/json");
 								$.mobile.showPageLoadingMsg(true);
 							},
@@ -265,7 +265,7 @@ $(document).ready(function(){ //For Normal usage
 			url: updateUrl,
 			data: newDetails,
 			beforeSend: function(xhr) {
-				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Authorization", header);
 				xhr.setRequestHeader("Accept", "application/json");
 				$.mobile.showPageLoadingMsg(true);
 			},
@@ -287,7 +287,7 @@ $(document).ready(function(){ //For Normal usage
 		$.ajax({
 			url: $(this).attr('data-href'),
 			beforeSend: function(xhr) {
-				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Authorization", header);
 				xhr.setRequestHeader("Accept", "application/json");
 				$.mobile.showPageLoadingMsg(true);
 			},
@@ -322,7 +322,7 @@ $(document).ready(function(){ //For Normal usage
 			$.ajax({
 				url: $(this).attr('data-href'),
 				beforeSend: function(xhr) {
-					//xhr.setRequestHeader("Authorization", header);
+					xhr.setRequestHeader("Authorization", header);
 					xhr.setRequestHeader("Accept", "application/json");
 					$.mobile.showPageLoadingMsg(true);
 				},
@@ -355,7 +355,7 @@ $(document).ready(function(){ //For Normal usage
 			$.ajax({
 				url: $(this).attr('data-href'),
 				beforeSend: function(xhr) {
-					//xhr.setRequestHeader("Authorization", header);
+					xhr.setRequestHeader("Authorization", header);
 					xhr.setRequestHeader("Accept", "application/json");
 					$.mobile.showPageLoadingMsg(true);
 				},
@@ -372,7 +372,7 @@ $(document).ready(function(){ //For Normal usage
 							type: invoke_method,
 							url: invoke_url,
 							beforeSend: function(xhr) {
-								//xhr.setRequestHeader("Authorization", header);
+								xhr.setRequestHeader("Authorization", header);
 								xhr.setRequestHeader("Accept", "application/json");
 								$.mobile.showPageLoadingMsg(true);
 							},
@@ -411,7 +411,7 @@ $(document).ready(function(){ //For Normal usage
 								type: invoke_method,
 								url: invoke_url,
 								beforeSend: function(xhr) {
-									//xhr.setRequestHeader("Authorization", header);
+									xhr.setRequestHeader("Authorization", header);
 									xhr.setRequestHeader("Accept", "application/json");
 									$.mobile.showPageLoadingMsg(true);
 								},
@@ -454,7 +454,7 @@ $(document).ready(function(){ //For Normal usage
 									$.ajax({
 										url: isisURL+"services/toDoItems/actions/allToDos/invoke",
 										beforeSend: function(xhr) {
-											//xhr.setRequestHeader("Authorization", header);
+											xhr.setRequestHeader("Authorization", header);
 											xhr.setRequestHeader("Accept", "application/json");
 											$.mobile.showPageLoadingMsg(true);
 										},
@@ -528,7 +528,7 @@ $(document).ready(function(){ //For Normal usage
 			url: $(this).attr('data-href'),
 			data: dependencyObject,
 			beforeSend: function(xhr) {
-				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Authorization", header);
 				xhr.setRequestHeader("Accept", "application/json");
 				$.mobile.showPageLoadingMsg(true);
 			},
@@ -558,7 +558,7 @@ $(document).ready(function(){ //For Normal usage
 			url: $(this).attr('data-href'),
 			data: dependencyObject,
 			beforeSend: function(xhr) {
-				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Authorization", header);
 				xhr.setRequestHeader("Accept", "application/json");
 				$.mobile.showPageLoadingMsg(true);
 			},
@@ -593,7 +593,7 @@ $(document).ready(function(){ //For Normal usage
 			url: updateUrl,
 			data: newDetails,
 			beforeSend: function(xhr) {
-				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Authorization", header);
 				xhr.setRequestHeader("Accept", "application/json");
 				$.mobile.showPageLoadingMsg(true);
 			},
@@ -620,7 +620,7 @@ $(document).ready(function(){ //For Normal usage
 			url: put_url,
 			data: newDetails,
 			beforeSend: function(xhr) {
-				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Authorization", header);
 				xhr.setRequestHeader("Accept", "application/json");
 				$.mobile.showPageLoadingMsg(true);
 			},
@@ -648,7 +648,7 @@ $(document).ready(function(){ //For Normal usage
 			url: $(this).attr('data-href'),
 			data: newDetails,
 			beforeSend: function(xhr) {
-				//xhr.setRequestHeader("Authorization", header);
+				xhr.setRequestHeader("Authorization", header);
 				xhr.setRequestHeader("Accept", "application/json");
 				$.mobile.showPageLoadingMsg(true);
 			},
