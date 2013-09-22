@@ -27,5 +27,7 @@ You can build this app as a Phonegap using two methods, one is through [Phonegap
 * You can make more customizations as per your need by editing the config.xml in the repo by forking this repo.
 * After the build is done, you can download apps as per your Platform requirement.
 
+To use a Phonegap built app, you can also download the same [here](https://build.phonegap.com/apps/562086/share). iOS build isn't available in this.
+
 ### Maven Build
 Work in progress
