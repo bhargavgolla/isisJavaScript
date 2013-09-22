@@ -12,4 +12,10 @@
     <preference name="fullscreen" value="true" />
     <preference name="webviewbounce" value="true" />
 	<preference name="load-url-timeout" value="60000" />
+	<icon src="res/drawable-xxhdpi/ic_launcher.png" />
+    <icon gap:density="mdpi" gap:platform="android" src="res/drawable-mdpi/ic_launcher.png" />
+    <icon gap:density="hdpi" gap:platform="android" src="res/drawable-hdpi/ic_launcher.png" />
+    <icon gap:density="xhdpi" gap:platform="android" src="res/drawable-xhdpi/ic_launcher.png" />
+	<icon gap:density="xxhdpi" gap:platform="android" src="res/drawable-xxhdpi/ic_launcher.png" />
+	
 </widget>
