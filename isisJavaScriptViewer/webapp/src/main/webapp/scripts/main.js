@@ -32,7 +32,7 @@ $(document).ready(function(){ //For Normal usage
 				},
 				success: function (result) {
 					console.log(result);
-					$('#home').load('../Content/partials/homePage.html', function(){
+					//$('#home').load('../Content/partials/homePage.html', function(){
 							var homePageList = '#home #homePageList';
 							$(homePageList).empty();
 							for(i = 0; i < result.links.length ; i++){
@@ -47,8 +47,8 @@ $(document).ready(function(){ //For Normal usage
 								}
 							}
 							$(homePageList).listview().listview('refresh');
-							$(this).trigger("pagecreate");
-					});
+							//$(this).trigger("pagecreate");
+					//});
 					$.mobile.changePage("#home");
 				},
 				error: function (request,error) {
