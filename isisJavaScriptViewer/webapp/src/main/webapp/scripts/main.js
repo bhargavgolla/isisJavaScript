@@ -32,7 +32,7 @@ $(document).ready(function(){ //For Normal usage
 				},
 				success: function (result) {
 					console.log(result);
-					$('#home').load('../Content/partials/homePage.html', function(){
+					$('#home').load('./Content/partials/homePage.html', function(){ // For Phonegap
 							var homePageList = '#home #homePageList';
 							$(homePageList).empty();
 							for(i = 0; i < result.links.length ; i++){
@@ -76,7 +76,7 @@ $(document).ready(function(){ //For Normal usage
 			success: function (result) {
 				console.log(result);
 				if (resource_url.indexOf("user") != -1){
-					$('#user').load('../Content/partials/user.html', function(){
+					$('#user').load('./Content/partials/user.html', function(){
 						for (var userObject in result){
 							if ( userObject.indexOf("userName") != -1){
 								$('#userNameText').html(result[userObject]);
@@ -94,7 +94,7 @@ $(document).ready(function(){ //For Normal usage
 					});
 					$.mobile.changePage("#user");
 				} else if (resource_url.indexOf("version") != -1){
-					$('#version').load('../Content/partials/version.html', function(){
+					$('#version').load('./Content/partials/version.html', function(){
 						for (var userObject in result) {
 							if ( userObject.indexOf("specVersion") != -1){
 								$('#specVersionText').html(result[userObject]);
@@ -106,7 +106,7 @@ $(document).ready(function(){ //For Normal usage
 					});
 					$.mobile.changePage("#version");
 				} else if (resource_url.indexOf("services") != -1){
-					$('#services').load('../Content/partials/services.html', function(){
+					$('#services').load('./Content/partials/services.html', function(){
 						var servicesList = '#services #servicesList';
 						$(servicesList).empty();
 						for(i = 0; i < result.value.length ; i++){
@@ -139,7 +139,7 @@ $(document).ready(function(){ //For Normal usage
 			success: function (result) {
 				var collections = result.members;
 				console.log(collections);
-				$('#service').load('../Content/partials/service.html', function(){
+				$('#service').load('./Content/partials/service.html', function(){
 					var collectionsList = '#service #collectionsList';
 					$(collectionsList).empty();
 					for(var collection in collections){
@@ -193,7 +193,7 @@ $(document).ready(function(){ //For Normal usage
 								var objects = data.result.value;
 								console.log(objects);
 								if(resultType == "list"){
-									$('#objects').load('../Content/partials/objects.html', function(){
+									$('#objects').load('./Content/partials/objects.html', function(){
 										var objectsList = '#objects #objectsList';
 										$(objectsList).empty();
 										for(i = 0; i < objects.length; i++){
@@ -236,7 +236,7 @@ $(document).ready(function(){ //For Normal usage
 							}
 						});
 					} else {
-						$('#parameters').load('../Content/partials/parameters.html', function(){
+						$('#parameters').load('./Content/partials/parameters.html', function(){
 							var parameterContent = '#parameters div.content';
 							$(parameterContent).empty();
 							console.log(parameters);
@@ -298,7 +298,7 @@ $(document).ready(function(){ //For Normal usage
 				var objectDetails = data.members;
 				var put_url = data.links[2].href;
 				console.log(objectDetails);
-				$("#object").load('../Content/partials/object.html', function(){
+				$("#object").load('./Content/partials/object.html', function(){
 					updateObjectPage(objectDetails, put_url);
 					$(this).trigger("pagecreate");
 				});
@@ -316,7 +316,7 @@ $(document).ready(function(){ //For Normal usage
 		if(disabled != 0){
 			toastr.info(disabled);
 		} else{
-			$('#similarObjects').load('../Content/partials/objects.html', function(){
+			$('#similarObjects').load('./Content/partials/objects.html', function(){
 				$(this).trigger("pagecreate");
 			});
 			$.ajax({
@@ -383,7 +383,7 @@ $(document).ready(function(){ //For Normal usage
 								var resultType = data.resulttype;
 								var objects = data.result.value;
 								if(resultType == "list"){
-									$('#similarToObjects').load('../Content/partials/similarObjects.html', function(){
+									$('#similarToObjects').load('./Content/partials/similarObjects.html', function(){
 										$('#similarToObjects #objectsSimilarList').empty();
 										console.log(objects);
 										for(i = 0; i < objects.length; i++){
@@ -440,7 +440,7 @@ $(document).ready(function(){ //For Normal usage
 								}
 							});
 						} else if(params.length == 4){
-							$('#parameters').load('../Content/partials/parameters.html', function(){
+							$('#parameters').load('./Content/partials/parameters.html', function(){
 								var parameterContent = '#parameters div.content';
 								$(parameterContent).empty();
 								console.log(params);
@@ -450,7 +450,7 @@ $(document).ready(function(){ //For Normal usage
 							$.mobile.changePage("#parameters");
 						} else if(params.length == 1){
 							if(id === "add"){
-								$('#addDependency').load('../Content/partials/addDependency.html', function(){
+								$('#addDependency').load('./Content/partials/addDependency.html', function(){
 									$.ajax({
 										url: isisURL+"services/toDoItems/actions/allToDos/invoke",
 										beforeSend: function(xhr) {
@@ -484,7 +484,7 @@ $(document).ready(function(){ //For Normal usage
 									$(this).trigger("pagecreate");
 								});
 							} else if(id === "remove"){
-								$('#removeDependency').load('../Content/partials/removeDependency.html', function(){
+								$('#removeDependency').load('./Content/partials/removeDependency.html', function(){
 									var objects = params[0].choices;
 									console.log(objects);
 									$.mobile.changePage("#removeDependency");
@@ -498,7 +498,7 @@ $(document).ready(function(){ //For Normal usage
 									$(this).trigger("pagecreate");
 								});
 							} else {
-								$('#parameters').load('../Content/partials/parameters.html', function(){
+								$('#parameters').load('./Content/partials/parameters.html', function(){
 									var parameterContent = '#parameters div.content';
 									$(parameterContent).empty();
 									console.log(params);
