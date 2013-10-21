@@ -30,4 +30,15 @@ You can build this app as a Phonegap using two methods, one is through [Phonegap
 To use a Phonegap built app, you can also download the same [here](https://build.phonegap.com/apps/562086/share). iOS build isn't available in this.
 
 ### Maven Build
-Work in progress
+
+You need to install the cordova android JAR manually into your local maven repository. There is cordova-2.9.0.jar available in libs/ folder in this repo. You can install this jar using the following command:
+	mvn install:install-file -DgroupId=org.apache.cordova -DartifactId=cordova -Dversion=2.9.0 -Dfile=<YOUR_PHONEGAP_ANDROID_JAR>  -Dpackaging=jar
+
+Then run:
+
+    mvn -Dandroid.sdk.path=<YOUR_SDK_PATH> clean install android:apk
+
+Note: android.sdk.path dependency is optional in above command if you have ANDROID_HOME environment variable defined.
+
+This should create an APK for you which can then be installed. You can install the apk on an emulator and run the app.
+
