@@ -35,7 +35,7 @@ You need to install the cordova android JAR manually into your local maven repos
 
 	mvn install:install-file -DgroupId=org.apache.cordova -DartifactId=cordova -Dversion=2.9.0 -Dfile=<YOUR_PHONEGAP_ANDROID_JAR>  -Dpackaging=jar
 
-Then run:
+Then run following command from isisJavaScriptViewer/ folder:
 
     mvn -Dandroid.sdk.path=<YOUR_SDK_PATH> clean install android:apk
 
