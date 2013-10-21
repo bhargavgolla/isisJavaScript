@@ -30,4 +30,4 @@ You can build this app as a Phonegap using two methods, one is through [Phonegap
 To use a Phonegap built app, you can also download the same [here](https://build.phonegap.com/apps/562086/share). iOS build isn't available in this.
 
 ### Maven Build
-Work in progress
+Can be found in branch maven-build [here](https://github.com/bhargavgolla/isisJavaScript/tree/maven-build)
