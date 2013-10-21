@@ -31,7 +31,7 @@ To use a Phonegap built app, you can also download the same [here](https://build
 
 ### Maven Build
 
-You need to install the cordova android JAR manually into your local maven repository. There is cordova-2.9.0.jar available in libs/ folder in this repo. You can install this jar using the following command:
+You need to install the cordova android JAR manually into your local maven repository. Download Phonegap 2.9.0 from [here](https://github.com/phonegap/phonegap/archive/2.9.0.zip) and install the Phonegap Android Jar using the following command:
 
 	mvn install:install-file -DgroupId=org.apache.cordova -DartifactId=cordova -Dversion=2.9.0 -Dfile=<YOUR_PHONEGAP_ANDROID_JAR>  -Dpackaging=jar
 
